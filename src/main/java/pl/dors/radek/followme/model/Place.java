@@ -1,6 +1,7 @@
 package pl.dors.radek.followme.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -11,16 +12,14 @@ public class Place {
 
     @Id
     private String id;
-    private double latitude;
-    private double longitude;
+    private GeoJsonPoint location;
     private String name;
 
     public Place() {
     }
 
-    public Place(double latitude, double longitude, String name) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public Place(GeoJsonPoint location, String name) {
+        this.location = location;
         this.name = name;
     }
 
@@ -32,20 +31,12 @@ public class Place {
         this.id = id;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public GeoJsonPoint getLocation() {
+        return location;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLocation(GeoJsonPoint location) {
+        this.location = location;
     }
 
     public String getName() {
@@ -59,9 +50,8 @@ public class Place {
     @Override
     public String toString() {
         return "Place{" +
-                "id=" + id +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
+                "id='" + id + '\'' +
+                ", location=" + location +
                 ", name='" + name + '\'' +
                 '}';
     }

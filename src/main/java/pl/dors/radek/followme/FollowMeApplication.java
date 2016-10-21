@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Component;
 import pl.dors.radek.followme.model.Customer;
 import pl.dors.radek.followme.model.Meeting;
@@ -70,8 +71,8 @@ public class FollowMeApplication {
         private void preparePlaces() {
             placeRepository.deleteAll();
 
-            placeRepository.save(new Place(1, 1.0, "Place 1"));
-            placeRepository.save(new Place(2, 3.0, "Place 2"));
+            placeRepository.save(new Place(new GeoJsonPoint(1, 2), "Place 1"));
+            placeRepository.save(new Place(new GeoJsonPoint(10, 20), "Place 2"));
 
             // fetch all places
             System.out.println("Places found with findAll():");
@@ -80,7 +81,9 @@ public class FollowMeApplication {
         }
 
         private void prepareMeetings() {
-            List<Place> places = Arrays.asList(new Place(1, 1.0, "Place Meeting 1"), new Place(2, 3.0, "Place Meeting 2"));
+            List<Place> places = Arrays.asList(
+                    new Place(new GeoJsonPoint(20, 10), "Place Meeting 1"),
+                    new Place(new GeoJsonPoint(15, 5), "Place Meeting 2"));
             places.stream().forEach(placeRepository::save);
 
             meetingRepository.deleteAll();
