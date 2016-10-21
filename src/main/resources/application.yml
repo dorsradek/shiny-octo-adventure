@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost/test
+  application:
+    name: follow-me
+server:
+  port: 8081
