@@ -1,4 +1,4 @@
-package pl.dors.radek.followme;
+package pl.dors.radek.followme.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

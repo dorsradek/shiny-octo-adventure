@@ -1,6 +1,7 @@
-package pl.dors.radek.followme;
+package pl.dors.radek.followme.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import pl.dors.radek.followme.model.Customer;
 
 import java.util.List;
 
