@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: follow-me-test
+server:
+  port: 8082

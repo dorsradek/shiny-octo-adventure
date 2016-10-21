@@ -1,22 +1,9 @@
 package pl.dors.radek.followme;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.stereotype.Component;
-import pl.dors.radek.followme.model.Customer;
-import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.Place;
-import pl.dors.radek.followme.repository.CustomerRepository;
-import pl.dors.radek.followme.repository.MeetingRepository;
-import pl.dors.radek.followme.repository.PlaceRepository;
-
-import java.util.Arrays;
-import java.util.List;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {EmbeddedMongoAutoConfiguration.class})
@@ -26,7 +13,7 @@ public class FollowMeApplication {
         SpringApplication.run(FollowMeApplication.class, args);
     }
 
-    @Component
+    /*@Component
     class CLR implements CommandLineRunner {
 
         @Autowired
@@ -101,5 +88,5 @@ public class FollowMeApplication {
                     .flatMap(m -> m.getPlaces().stream())
                     .forEach(System.out::println);
         }
-    }
+    }*/
 }
