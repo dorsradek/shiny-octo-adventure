@@ -45,7 +45,7 @@ public class PlaceControllerTest {
     }
 
     @Test
-    public void testGetPlaces() throws Exception {
+    public void findAllPlacesTest() throws Exception {
         Place p1 = new Place(new GeoJsonPoint(12, 13), "Stefan");
         List<Place> expectedResult = Stream.of(p1).collect(Collectors.toList());
 
