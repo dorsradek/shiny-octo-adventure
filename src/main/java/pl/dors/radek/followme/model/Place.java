@@ -55,4 +55,25 @@ public class Place {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Place place = (Place) o;
+
+        if (id != null ? !id.equals(place.id) : place.id != null) return false;
+        if (location != null ? !location.equals(place.location) : place.location != null) return false;
+        return name != null ? name.equals(place.name) : place.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 }
