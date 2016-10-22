@@ -1,6 +1,5 @@
 package pl.dors.radek.followme.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.repository.MeetingRepository;
@@ -15,7 +14,6 @@ public class MeetingService implements IMeetingService {
 
     private MeetingRepository meetingRepository;
 
-    @Autowired
     public MeetingService(MeetingRepository meetingRepository) {
         this.meetingRepository = meetingRepository;
     }
