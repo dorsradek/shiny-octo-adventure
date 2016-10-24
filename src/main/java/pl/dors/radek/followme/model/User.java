@@ -1,25 +1,22 @@
 package pl.dors.radek.followme.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Created by rdors on 2016-10-21.
+ * Created by rdors on 2016-10-24.
  */
 @Document
-public class Place {
+public class User {
 
     @Id
     private String id;
-    private GeoJsonPoint location;
     private String name;
 
-    public Place() {
+    public User() {
     }
 
-    public Place(GeoJsonPoint location, String name) {
-        this.location = location;
+    public User(String name) {
         this.name = name;
     }
 
@@ -31,14 +28,6 @@ public class Place {
         this.id = id;
     }
 
-    public GeoJsonPoint getLocation() {
-        return location;
-    }
-
-    public void setLocation(GeoJsonPoint location) {
-        this.location = location;
-    }
-
     public String getName() {
         return name;
     }
@@ -47,35 +36,30 @@ public class Place {
         this.name = name;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Place place = (Place) o;
+        User user = (User) o;
 
-        if (id != null ? !id.equals(place.id) : place.id != null) return false;
-        if (location != null ? !location.equals(place.location) : place.location != null) return false;
-        return name != null ? name.equals(place.name) : place.name == null;
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
+        return name != null ? name.equals(user.name) : user.name == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (location != null ? location.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Place{" +
+        return "User{" +
                 "id='" + id + '\'' +
-                ", location=" + location +
                 ", name='" + name + '\'' +
                 '}';
     }
-
 }
