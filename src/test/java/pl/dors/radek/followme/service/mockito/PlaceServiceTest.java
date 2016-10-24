@@ -1,5 +1,6 @@
 package pl.dors.radek.followme.service.mockito;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,12 +30,17 @@ public class PlaceServiceTest {
     @Mock
     private PlaceRepository placeRepository;
 
+    @Before
+    public void setUp() throws Exception {
+        Mockito.when(placeRepository.findAll())
+                .thenReturn(Arrays.asList(new Place(new GeoJsonPoint(12, 13), "Stefan")));
+    }
+
     @Test
     public void findAllTest() {
-        Mockito.when(placeRepository.findAll()).thenReturn(Arrays.asList(new Place(new GeoJsonPoint(12, 13), "Stefan")));
-        Stream<Place> places = placeService.findAll();
+        Stream<Place> result = placeService.findAll();
 
         Mockito.verify(placeRepository, Mockito.times(1)).findAll();
-        assertThat(places.peek(System.out::println).collect(Collectors.toList())).hasSize(1);
+        assertThat(result.peek(System.out::println).collect(Collectors.toList())).hasSize(1);
     }
 }

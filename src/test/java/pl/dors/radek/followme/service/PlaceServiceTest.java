@@ -1,5 +1,6 @@
 package pl.dors.radek.followme.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,16 @@ public class PlaceServiceTest {
     @MockBean(name = "placeRepository")
     private PlaceRepository placeRepository;
 
+    @Before
+    public void setUp() throws Exception {
+        given(this.placeRepository.findAll())
+                .willReturn(Arrays.asList(new Place(new GeoJsonPoint(12, 13), "Stefan")));
+    }
+
     @Test
     public void findAllTest() {
-        given(this.placeRepository.findAll()).willReturn(Arrays.asList(new Place(new GeoJsonPoint(12, 13), "Stefan")));
         Stream<Place> places = placeService.findAll();
+
         assertThat(places.peek(System.out::println).collect(Collectors.toList())).hasSize(1);
     }
 }

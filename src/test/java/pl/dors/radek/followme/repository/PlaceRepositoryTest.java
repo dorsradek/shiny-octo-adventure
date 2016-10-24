@@ -37,9 +37,10 @@ public class PlaceRepositoryTest {
 
     @Test
     public void findAllTest() {
-        List<Place> places = placeRepository.findAll();
-        assertThat(places).hasSize(1);
-        assertThat(places).containsOnly(place);
+        List<Place> result = placeRepository.findAll();
+
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(place);
     }
 
 }

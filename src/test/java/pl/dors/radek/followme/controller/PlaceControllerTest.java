@@ -14,8 +14,8 @@ import pl.dors.radek.followme.commons.TestCommons;
 import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.service.PlaceService;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.mockito.BDDMockito.given;
@@ -39,15 +39,14 @@ public class PlaceControllerTest {
     private TestCommons testCommons;
 
     @Before
-    public void setup() {
-        Stream<Place> expectedResult = Stream.of(new Place(new GeoJsonPoint(12, 13), "Stefan"));
-        given(this.placeService.findAll()).willReturn(expectedResult);
+    public void setUp() throws Exception {
+        Stream<Place> places = Stream.of(new Place(new GeoJsonPoint(12, 13), "Stefan"));
+        given(this.placeService.findAll()).willReturn(places);
     }
 
     @Test
     public void findAllPlacesTest() throws Exception {
-        Place p1 = new Place(new GeoJsonPoint(12, 13), "Stefan");
-        List<Place> expectedResult = Stream.of(p1).collect(Collectors.toList());
+        List<Place> expectedResult = Arrays.asList(new Place(new GeoJsonPoint(12, 13), "Stefan"));
 
         this.mvc.perform(get("/places"))
                 .andExpect(status().isOk())
