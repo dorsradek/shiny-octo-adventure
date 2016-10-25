@@ -1,40 +1,43 @@
 package pl.dors.radek.followme.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.List;
 
 /**
  * Created by rdors on 2016-10-21.
  */
-@Document
+@Entity
+@Table(name = "MEETING")
 public class Meeting {
 
     @Id
-    private String id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private int id;
+
+    @Column(name = "NAME", nullable = false, length = 20)
     private String name;
-    @DBRef
-    private List<Place> places;
-    @DBRef
-    private List<User> users;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL)
+    private List<MeetingPlace> meetingPlaces;
+
+    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL)
+    @Transient
+    private List<MeetingUser> meetingUsers;
 
     public Meeting() {
     }
 
-    public Meeting(String name, List<Place> places, List<User> users) {
+    public Meeting(String name, List<MeetingPlace> meetingPlaces, List<MeetingUser> meetingUsers) {
         this.name = name;
-        this.places = places;
-        this.users = users;
+        this.meetingPlaces = meetingPlaces;
+        this.meetingUsers = meetingUsers;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -46,26 +49,20 @@ public class Meeting {
         this.name = name;
     }
 
-    public List<Place> getPlaces() {
-        if (places == null) {
-            places = new ArrayList<>();
-        }
-        return places;
+    public List<MeetingPlace> getMeetingPlaces() {
+        return meetingPlaces;
     }
 
-    public void setPlaces(List<Place> places) {
-        this.places = places;
+    public void setMeetingPlaces(List<MeetingPlace> meetingPlaces) {
+        this.meetingPlaces = meetingPlaces;
     }
 
-    public List<User> getUsers() {
-        if (users == null) {
-            users = new ArrayList<>();
-        }
-        return users;
+    public List<MeetingUser> getMeetingUsers() {
+        return meetingUsers;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setMeetingUsers(List<MeetingUser> meetingUsers) {
+        this.meetingUsers = meetingUsers;
     }
 
     @Override
@@ -75,19 +72,20 @@ public class Meeting {
 
         Meeting meeting = (Meeting) o;
 
-        if (id != null ? !id.equals(meeting.id) : meeting.id != null) return false;
+        if (id != meeting.id) return false;
         if (name != null ? !name.equals(meeting.name) : meeting.name != null) return false;
-        if (places != null ? !places.equals(meeting.places) : meeting.places != null) return false;
-        return users != null ? users.equals(meeting.users) : meeting.users == null;
+        if (meetingPlaces != null ? !meetingPlaces.equals(meeting.meetingPlaces) : meeting.meetingPlaces != null)
+            return false;
+        return meetingUsers != null ? meetingUsers.equals(meeting.meetingUsers) : meeting.meetingUsers == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (places != null ? places.hashCode() : 0);
-        result = 31 * result + (users != null ? users.hashCode() : 0);
+        result = 31 * result + (meetingPlaces != null ? meetingPlaces.hashCode() : 0);
+        result = 31 * result + (meetingUsers != null ? meetingUsers.hashCode() : 0);
         return result;
     }
 
@@ -96,8 +94,8 @@ public class Meeting {
         return "Meeting{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", places=" + places +
-                ", users=" + users +
+                ", meetingPlaces=" + meetingPlaces +
+                ", meetingUsers=" + meetingUsers +
                 '}';
     }
 }

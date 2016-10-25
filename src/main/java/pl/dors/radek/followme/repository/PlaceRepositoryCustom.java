@@ -1,4 +1,4 @@
-package pl.dors.radek.followme.repository.custom;
+package pl.dors.radek.followme.repository;
 
 import pl.dors.radek.followme.model.Place;
 
