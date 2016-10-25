@@ -30,9 +30,6 @@ public class PlaceRepositoryTest {
     @Autowired
     private PlaceRepository placeRepository;
 
-    @Autowired
-    private PlaceSpecification placeSpecification;
-
     private List<Place> places;
 
     @Before
