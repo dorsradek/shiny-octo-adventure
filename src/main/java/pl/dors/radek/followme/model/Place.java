@@ -1,26 +1,38 @@
 package pl.dors.radek.followme.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by rdors on 2016-10-21.
  */
-@Document
+@Entity
+@Table(name = "PLACE")
 public class Place {
 
     @Id
+    @Column(name = "ID", unique = true, nullable = false)
     private String id;
-    private GeoJsonPoint location;
+
+    @Column(name = "NAME", nullable = false, length = 20)
     private String name;
+
+    @Column(name = "X")
+    private double x;
+
+    @Column(name = "Y")
+    private double y;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.place", cascade = CascadeType.ALL)
+    private List<MeetingPlace> meetingPlaces;
 
     public Place() {
     }
 
-    public Place(GeoJsonPoint location, String name) {
-        this.location = location;
+    public Place(String name, double x, double y) {
         this.name = name;
+        this.x = x;
+        this.y = y;
     }
 
     public String getId() {
@@ -31,14 +43,6 @@ public class Place {
         this.id = id;
     }
 
-    public GeoJsonPoint getLocation() {
-        return location;
-    }
-
-    public void setLocation(GeoJsonPoint location) {
-        this.location = location;
-    }
-
     public String getName() {
         return name;
     }
@@ -47,34 +51,37 @@ public class Place {
         this.name = name;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Place place = (Place) o;
-
-        if (id != null ? !id.equals(place.id) : place.id != null) return false;
-        if (location != null ? !location.equals(place.location) : place.location != null) return false;
-        return name != null ? name.equals(place.name) : place.name == null;
-
+    public double getX() {
+        return x;
     }
 
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public List<MeetingPlace> getMeetingPlaces() {
+        return meetingPlaces;
+    }
+
+    public void setMeetingPlaces(List<MeetingPlace> meetingPlaces) {
+        this.meetingPlaces = meetingPlaces;
     }
 
     @Override
     public String toString() {
         return "Place{" +
                 "id='" + id + '\'' +
-                ", location=" + location +
                 ", name='" + name + '\'' +
+                ", x=" + x +
+                ", y=" + y +
                 '}';
     }
 

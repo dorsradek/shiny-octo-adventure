@@ -7,15 +7,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.model.Place;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PlaceRepositoryTest {
 
     @Autowired
-    private MongoTemplate template;
+    private EntityManager entityManager;
 
     @Autowired
     private PlaceRepository placeRepository;
@@ -36,15 +34,16 @@ public class PlaceRepositoryTest {
     @Before
     public void setUp() throws Exception {
         places = Arrays.asList(
-                new Place(new GeoJsonPoint(12, 13), "Stefan"),
-                new Place(new GeoJsonPoint(11, 11), "ASD")
+                new Place("Stefan", 12, 13),
+                new Place("ASD", 11, 11)
         );
-        places.forEach(template::save);
+        places.forEach(entityManager::persist);
     }
 
     @After
     public void tearDown() throws Exception {
-        template.dropCollection(Place.class);
+        Query query = entityManager.createNativeQuery("DELETE FROM PLACE");
+        query.executeUpdate();
     }
 
     @Test

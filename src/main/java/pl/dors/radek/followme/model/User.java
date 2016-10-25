@@ -1,15 +1,10 @@
 package pl.dors.radek.followme.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 /**
  * Created by rdors on 2016-10-24.
  */
-@Document
 public class User {
 
-    @Id
     private String id;
     private String name;
 
