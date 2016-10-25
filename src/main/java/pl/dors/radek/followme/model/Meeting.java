@@ -58,8 +58,7 @@ public class Meeting {
         this.meetingPlaces = meetingPlaces;
     }
 
-    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL)
-    @Transient
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL)
     public List<MeetingUser> getMeetingUsers() {
         return meetingUsers;
     }

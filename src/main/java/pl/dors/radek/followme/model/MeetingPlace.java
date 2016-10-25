@@ -61,7 +61,6 @@ public class MeetingPlace {
         MeetingPlace that = (MeetingPlace) o;
 
         return pk != null ? pk.equals(that.pk) : that.pk == null;
-
     }
 
     @Override

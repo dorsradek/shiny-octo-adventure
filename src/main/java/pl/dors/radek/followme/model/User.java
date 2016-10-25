@@ -1,12 +1,18 @@
 package pl.dors.radek.followme.model;
 
+import javax.persistence.*;
+import java.util.List;
+
 /**
  * Created by rdors on 2016-10-24.
  */
+@Entity
+@Table(name = "USER")
 public class User {
 
-    private String id;
+    private Long id;
     private String name;
+    private List<MeetingUser> meetingUsers;
 
     public User() {
     }
@@ -15,20 +21,33 @@ public class User {
         this.name = name;
     }
 
-    public String getId() {
+    @Id
+    @Column(name = "ID", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
+    @Column(name = "NAME", nullable = false, length = 20)
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user")
+    public List<MeetingUser> getMeetingUsers() {
+        return meetingUsers;
+    }
+
+    public void setMeetingUsers(List<MeetingUser> meetingUsers) {
+        this.meetingUsers = meetingUsers;
     }
 
     @Override
@@ -55,6 +74,7 @@ public class User {
         return "User{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", meetingUsers=" + meetingUsers +
                 '}';
     }
 }
