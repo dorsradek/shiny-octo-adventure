@@ -12,6 +12,7 @@ public class Place {
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(name = "NAME", nullable = false, length = 20)
