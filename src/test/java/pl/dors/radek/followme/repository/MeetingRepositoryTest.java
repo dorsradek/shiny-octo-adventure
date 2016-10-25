@@ -1,26 +1,16 @@
 package pl.dors.radek.followme.repository;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.model.User;
-import pl.dors.radek.followme.repository.MeetingRepository;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by rdors on 2016-10-24.
@@ -30,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableAutoConfiguration
 public class MeetingRepositoryTest {
 
-    @Autowired
-    private MongoTemplate template;
-
-    @Autowired
-    private MeetingRepository meetingRepository;
+//    @Autowired
+//    private MongoTemplate template;
+//
+//    @Autowired
+//    private MeetingRepository meetingRepository;
 
     private List<Place> places;
     private List<User> users;
