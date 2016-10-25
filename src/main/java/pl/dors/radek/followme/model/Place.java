@@ -10,21 +10,10 @@ import java.util.List;
 @Table(name = "PLACE")
 public class Place {
 
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-
-    @Column(name = "NAME", nullable = false, length = 20)
+    private Long id;
     private String name;
-
-    @Column(name = "X")
     private double x;
-
-    @Column(name = "Y")
     private double y;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.place", cascade = CascadeType.ALL)
     private List<MeetingPlace> meetingPlaces;
 
     public Place() {
@@ -36,14 +25,18 @@ public class Place {
         this.y = y;
     }
 
-    public String getId() {
+    @Id
+    @Column(name = "ID", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
+    @Column(name = "NAME", nullable = false, length = 20)
     public String getName() {
         return name;
     }
@@ -52,6 +45,7 @@ public class Place {
         this.name = name;
     }
 
+    @Column(name = "X")
     public double getX() {
         return x;
     }
@@ -60,6 +54,7 @@ public class Place {
         this.x = x;
     }
 
+    @Column(name = "Y")
     public double getY() {
         return y;
     }
@@ -68,6 +63,7 @@ public class Place {
         this.y = y;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.place")
     public List<MeetingPlace> getMeetingPlaces() {
         return meetingPlaces;
     }
@@ -77,12 +73,40 @@ public class Place {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Place place = (Place) o;
+
+        if (Double.compare(place.x, x) != 0) return false;
+        if (Double.compare(place.y, y) != 0) return false;
+        if (id != null ? !id.equals(place.id) : place.id != null) return false;
+        return name != null ? name.equals(place.name) : place.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        temp = Double.doubleToLongBits(x);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(y);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Place{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", x=" + x +
                 ", y=" + y +
+                ", meetingPlaces=" + meetingPlaces +
                 '}';
     }
 

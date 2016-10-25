@@ -6,12 +6,10 @@ import javax.persistence.ManyToOne;
 @Embeddable
 public class MeetingPlaceID implements java.io.Serializable {
 
-    @ManyToOne
     private Meeting meeting;
-
-    @ManyToOne
     private Place place;
 
+    @ManyToOne
     public Meeting getMeeting() {
         return meeting;
     }
@@ -20,6 +18,7 @@ public class MeetingPlaceID implements java.io.Serializable {
         this.meeting = meeting;
     }
 
+    @ManyToOne
     public Place getPlace() {
         return place;
     }

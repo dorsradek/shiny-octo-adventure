@@ -7,7 +7,6 @@ import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.service.IPlaceService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -24,6 +23,6 @@ public class PlaceController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Place> findAll() {
-        return placeService.findAll().collect(Collectors.toList());
+        return placeService.findAll();
     }
 }

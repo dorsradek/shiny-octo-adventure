@@ -1,6 +1,5 @@
 package pl.dors.radek.followme.repository;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,9 +8,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.model.Place;
+import pl.dors.radek.followme.specification.PlaceSpecification;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +30,9 @@ public class PlaceRepositoryTest {
     @Autowired
     private PlaceRepository placeRepository;
 
+    @Autowired
+    private PlaceSpecification placeSpecification;
+
     private List<Place> places;
 
     @Before
@@ -42,12 +44,6 @@ public class PlaceRepositoryTest {
         places.forEach(entityManager::persist);
     }
 
-//    @After
-//    public void tearDown() throws Exception {
-//        Query query = entityManager.createNativeQuery("DELETE FROM PLACE");
-//        query.executeUpdate();
-//    }
-
     @Test
     public void findAllTest() throws Exception {
         List<Place> result = placeRepository.findAll();
@@ -57,10 +53,10 @@ public class PlaceRepositoryTest {
     }
 
     @Test
-    public void findByNameCriteria() throws Exception {
-        List<Place> result = placeRepository.findByNameCriteria("Stefan");
+    public void findByNameTest() throws Exception {
+        List<Place> result = placeRepository.findAll(PlaceSpecification.findByName("Stefan"));
 
-//        assertThat(result).hasSize(1);
-//        assertThat(result).containsOnly(places.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(places.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());
     }
 }
