@@ -6,12 +6,14 @@ import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.specification.PlaceSpecification;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
  * Created by rdors on 2016-10-21.
  */
 @Service
+@Transactional
 public class PlaceService implements IPlaceService {
 
     private PlaceRepository placeRepository;
