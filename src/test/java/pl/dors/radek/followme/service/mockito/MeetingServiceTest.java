@@ -87,12 +87,12 @@ public class MeetingServiceTest {
 
     @Test
     public void addPlaces() throws Exception {
-
+        // TODO: adding places to meeting
     }
 
     @Test
     public void addUsers() throws Exception {
-
+        // TODO: adding users to meeting
     }
 
 }
