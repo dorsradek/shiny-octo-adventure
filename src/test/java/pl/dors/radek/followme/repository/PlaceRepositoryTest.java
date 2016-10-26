@@ -66,4 +66,13 @@ public class PlaceRepositoryTest {
         Place result = entityManager.find(Place.class, place.getId());
         assertThat(result.getName()).isEqualTo("P1");
     }
+
+    @Test
+    public void updateNameTest() throws Exception {
+        Place place = entityManager.find(Place.class, places.get(0).getId());
+        place.setName("P33");
+        placeRepository.save(place);
+        place = entityManager.find(Place.class, place.getId());
+        assertThat(place.getName()).isEqualTo("P33");
+    }
 }
