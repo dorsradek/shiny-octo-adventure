@@ -3,11 +3,10 @@ package pl.dors.radek.followme.service;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.helper.MeetingHelper;
 import pl.dors.radek.followme.model.*;
-import pl.dors.radek.followme.repository.MeetingRepository;
-import pl.dors.radek.followme.repository.PlaceRepository;
-import pl.dors.radek.followme.repository.UserRepository;
+import pl.dors.radek.followme.repository.*;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -20,11 +19,14 @@ public class MeetingService implements IMeetingService {
     private MeetingRepository meetingRepository;
     private PlaceRepository placeRepository;
     private UserRepository userRepository;
+    private MeetingUserRepository meetingUserRepository;
+    private MeetingPlaceRepository meetingPlaceRepository;
 
-    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, UserRepository userRepository) {
+    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, UserRepository userRepository, MeetingUserRepository meetingUserRepository) {
         this.meetingRepository = meetingRepository;
         this.placeRepository = placeRepository;
         this.userRepository = userRepository;
+        this.meetingUserRepository = meetingUserRepository;
     }
 
     @Override
@@ -60,6 +62,22 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
+    public void removePlace(Meeting meeting, Place place) {
+        Meeting findedMeeting = meetingRepository.findOne(meeting.getId());
+        findedMeeting.getMeetingPlaces().stream()
+                .filter(meetingPlace -> meetingPlace.getPlace().getId().equals(place.getId()))
+                .forEach(meetingPlaceRepository::delete);
+    }
+
+    @Override
+    public void removePlaces(Meeting meeting, List<Place> places) {
+        Meeting findedMeeting = meetingRepository.findOne(meeting.getId());
+        findedMeeting.getMeetingPlaces().stream()
+                .filter(meetingPlace -> places.stream().anyMatch(place -> place.getId().equals(meetingPlace.getPlace().getId())))
+                .forEach(meetingPlaceRepository::delete);
+    }
+
+    @Override
     public void addUser(Meeting meeting, User user) {
         MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
         userRepository.save(user);
@@ -73,6 +91,61 @@ public class MeetingService implements IMeetingService {
         users.forEach(userRepository::save);
         createMeetingUsers(meeting, users);
         meetingRepository.save(meeting);
+    }
+
+    @Override
+    public void removeUser(Meeting meeting, User user) {
+        Meeting findedMeeting = meetingRepository.findOne(meeting.getId());
+        findedMeeting.getMeetingUsers().stream()
+                .filter(meetingUser -> meetingUser.getUser().getId().equals(user.getId()))
+                .forEach(meetingUserRepository::delete);
+    }
+
+    @Override
+    public void removeUsers(Meeting meeting, List<User> users) {
+        Meeting findedMeeting = meetingRepository.findOne(meeting.getId());
+        findedMeeting.getMeetingUsers().stream()
+                .filter(meetingUser -> users.stream().anyMatch(user -> user.getId().equals(meetingUser.getUser().getId())))
+                .forEach(meetingUserRepository::delete);
+    }
+
+    @Override
+    public void updateUserData(Meeting meeting, User user, UserStatus userStatus, double x, double y, boolean updateLastUpdate) {
+        Meeting findedMeeting = meetingRepository.findOne(meeting.getId());
+        User findedUser = userRepository.findOne(user.getId());
+        MeetingUser meetingUser = findedMeeting.getMeetingUsers().stream().filter(m -> m.getUser().getId().equals(findedUser.getId())).findAny().get();
+        meetingUser.setUserStatus(userStatus);
+        meetingUser.setX(x);
+        meetingUser.setY(y);
+        if (updateLastUpdate) {
+            meetingUser.setLastUpdate(LocalDateTime.now());
+        }
+        meetingUserRepository.save(meetingUser);
+    }
+
+    @Override
+    public void updateUserData(Meeting meeting, User user, UserStatus userStatus, boolean updateLastUpdate) {
+        Meeting findedMeeting = meetingRepository.findOne(meeting.getId());
+        User findedUser = userRepository.findOne(user.getId());
+        MeetingUser meetingUser = findedMeeting.getMeetingUsers().stream().filter(m -> m.getUser().getId().equals(findedUser.getId())).findAny().get();
+        meetingUser.setUserStatus(userStatus);
+        if (updateLastUpdate) {
+            meetingUser.setLastUpdate(LocalDateTime.now());
+        }
+        meetingUserRepository.save(meetingUser);
+    }
+
+    @Override
+    public void updateUserData(Meeting meeting, User user, double x, double y, boolean updateLastUpdate) {
+        Meeting findedMeeting = meetingRepository.findOne(meeting.getId());
+        User findedUser = userRepository.findOne(user.getId());
+        MeetingUser meetingUser = findedMeeting.getMeetingUsers().stream().filter(m -> m.getUser().getId().equals(findedUser.getId())).findAny().get();
+        meetingUser.setX(x);
+        meetingUser.setY(y);
+        if (updateLastUpdate) {
+            meetingUser.setLastUpdate(LocalDateTime.now());
+        }
+        meetingUserRepository.save(meetingUser);
     }
 
     private void createMeetingUsers(Meeting meeting, List<User> users) {
