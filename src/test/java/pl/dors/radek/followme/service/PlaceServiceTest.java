@@ -26,7 +26,6 @@ import static org.mockito.Matchers.any;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PlaceServiceTest {
 
-
     @Autowired
     private PlaceService placeService;
 
