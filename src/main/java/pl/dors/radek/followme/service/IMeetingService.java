@@ -15,7 +15,11 @@ public interface IMeetingService {
 
     void save(Meeting meeting, List<User> users, List<Place> places);
 
+    void addPlace(Meeting meeting, Place place);
+
     void addPlaces(Meeting meeting, List<Place> places);
+
+    void addUser(Meeting meeting, User user);
 
     void addUsers(Meeting meeting, List<User> users);
 }

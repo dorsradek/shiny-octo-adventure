@@ -1,6 +1,7 @@
 package pl.dors.radek.followme.service;
 
 import org.springframework.stereotype.Service;
+import pl.dors.radek.followme.helper.MeetingHelper;
 import pl.dors.radek.followme.model.*;
 import pl.dors.radek.followme.repository.MeetingRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
@@ -43,14 +44,32 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
+    public void addPlace(Meeting meeting, Place place) {
+        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
+        placeRepository.save(place);
+        createMeetingPlace(meeting, place);
+        meetingRepository.save(meeting);
+    }
+
+    @Override
     public void addPlaces(Meeting meeting, List<Place> places) {
+        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
         places.forEach(placeRepository::save);
         createMeetingPlaces(meeting, places);
         meetingRepository.save(meeting);
     }
 
     @Override
+    public void addUser(Meeting meeting, User user) {
+        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
+        userRepository.save(user);
+        createMeetingUser(meeting, user);
+        meetingRepository.save(meeting);
+    }
+
+    @Override
     public void addUsers(Meeting meeting, List<User> users) {
+        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
         users.forEach(userRepository::save);
         createMeetingUsers(meeting, users);
         meetingRepository.save(meeting);
@@ -58,23 +77,32 @@ public class MeetingService implements IMeetingService {
 
     private void createMeetingUsers(Meeting meeting, List<User> users) {
         users.forEach(u -> {
-            MeetingUser meetingUser = new MeetingUser();
-            meetingUser.setMeeting(meeting);
-            meetingUser.setUser(u);
-            meetingUser.setOwner(false);
-            meeting.getMeetingUsers().add(meetingUser);
+            createMeetingUser(meeting, u);
         });
+    }
+
+    private MeetingUser createMeetingUser(Meeting meeting, User user) {
+        MeetingUser meetingUser = new MeetingUser();
+        meetingUser.setMeeting(meeting);
+        meetingUser.setUser(user);
+        meetingUser.setOwner(false);
+        meeting.getMeetingUsers().add(meetingUser);
+        return meetingUser;
     }
 
     private void createMeetingPlaces(Meeting meeting, List<Place> places) {
         places.forEach(p -> {
-            MeetingPlace meetingPlace = new MeetingPlace();
-            meetingPlace.setMeeting(meeting);
-            meetingPlace.setPlace(p);
-            meetingPlace.setOwner(false);
-            meeting.getMeetingPlaces().add(meetingPlace);
+            createMeetingPlace(meeting, p);
         });
     }
 
+    private MeetingPlace createMeetingPlace(Meeting meeting, Place place) {
+        MeetingPlace meetingPlace = new MeetingPlace();
+        meetingPlace.setMeeting(meeting);
+        meetingPlace.setPlace(place);
+        meetingPlace.setOwner(false);
+        meeting.getMeetingPlaces().add(meetingPlace);
+        return meetingPlace;
+    }
 
 }

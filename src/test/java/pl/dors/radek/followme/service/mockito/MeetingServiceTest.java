@@ -44,8 +44,18 @@ public class MeetingServiceTest {
     }
 
     @Test
+    public void addPlace() throws Exception {
+        MeetingServiceCommon.addPlace(meetingService);
+    }
+
+    @Test
     public void addPlaces() throws Exception {
         MeetingServiceCommon.addPlaces(meetingService);
+    }
+
+    @Test
+    public void addUser() throws Exception {
+        MeetingServiceCommon.addUser(meetingService);
     }
 
     @Test
