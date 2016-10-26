@@ -3,6 +3,7 @@ package pl.dors.radek.followme.model;
 import pl.dors.radek.followme.model.id.MeetingUserID;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * Created by rdors on 2016-10-25.
@@ -18,6 +19,10 @@ public class MeetingUser {
 
     private MeetingUserID pk = new MeetingUserID();
     private boolean owner;
+    private double x;
+    private double y;
+    private LocalDateTime lastUpdate;
+    private UserStatus userStatus;
 
     @EmbeddedId
     public MeetingUserID getPk() {
@@ -35,6 +40,41 @@ public class MeetingUser {
 
     public void setOwner(boolean owner) {
         this.owner = owner;
+    }
+
+    @Column(name = "X")
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    @Column(name = "Y")
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    @Column(name = "LAST_UPDATE")
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     @Transient
