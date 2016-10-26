@@ -56,4 +56,14 @@ public class PlaceRepositoryTest {
         assertThat(result).hasSize(1);
         assertThat(result).containsOnly(places.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());
     }
+
+    @Test
+    public void saveTest() throws Exception {
+        Place place = new Place("P1", 1, 2);
+        placeRepository.save(place);
+
+        assertThat(place.getId()).isNotNull();
+        Place result = entityManager.find(Place.class, place.getId());
+        assertThat(result.getName()).isEqualTo("P1");
+    }
 }
