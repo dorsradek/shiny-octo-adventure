@@ -58,4 +58,23 @@ public class UserRepositoryTest {
         assertThat(result).hasSize(1);
         assertThat(result).containsOnly(users.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());
     }
+
+    @Test
+    public void saveTest() throws Exception {
+        User user = new User("U1");
+        userRepository.save(user);
+
+        assertThat(user.getId()).isNotNull();
+        User result = entityManager.find(User.class, user.getId());
+        assertThat(result.getName()).isEqualTo("U1");
+    }
+
+    @Test
+    public void updateNameTest() throws Exception {
+        User user = entityManager.find(User.class, users.get(0).getId());
+        user.setName("U33");
+        userRepository.save(user);
+        user = entityManager.find(User.class, user.getId());
+        assertThat(user.getName()).isEqualTo("U33");
+    }
 }
