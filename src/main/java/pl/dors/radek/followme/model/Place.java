@@ -63,7 +63,7 @@ public class Place {
         this.y = y;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.place")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.place", cascade = CascadeType.ALL)
     public List<MeetingPlace> getMeetingPlaces() {
         return meetingPlaces;
     }
