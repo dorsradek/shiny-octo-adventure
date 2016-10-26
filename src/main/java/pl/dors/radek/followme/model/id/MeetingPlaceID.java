@@ -1,4 +1,7 @@
-package pl.dors.radek.followme.model;
+package pl.dors.radek.followme.model.id;
+
+import pl.dors.radek.followme.model.Meeting;
+import pl.dors.radek.followme.model.Place;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;

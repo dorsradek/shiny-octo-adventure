@@ -1,12 +1,14 @@
 package pl.dors.radek.followme.model;
 
+import pl.dors.radek.followme.model.id.MeetingUserID;
+
 import javax.persistence.*;
 
 /**
  * Created by rdors on 2016-10-25.
  */
 @Entity
-@Table(name = "meeting_user")
+@Table(name = "MEETING_USER")
 @AssociationOverrides({
         @AssociationOverride(name = "pk.meeting",
                 joinColumns = @JoinColumn(name = "MEETING_ID")),
