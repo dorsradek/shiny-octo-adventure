@@ -1,5 +1,6 @@
 package pl.dors.radek.followme.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pl.dors.radek.followme.model.id.MeetingUserID;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
                 joinColumns = @JoinColumn(name = "USER_ID"))})
 public class MeetingUser {
 
+    @JsonIgnore
     private MeetingUserID pk = new MeetingUserID();
     private boolean owner;
     private double x;
@@ -77,6 +79,7 @@ public class MeetingUser {
         this.userStatus = userStatus;
     }
 
+    @JsonIgnore
     @Transient
     public Meeting getMeeting() {
         return getPk().getMeeting();

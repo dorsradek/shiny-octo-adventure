@@ -1,9 +1,6 @@
 package pl.dors.radek.followme.service;
 
-import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.Place;
-import pl.dors.radek.followme.model.User;
-import pl.dors.radek.followme.model.UserStatus;
+import pl.dors.radek.followme.model.*;
 
 import java.util.List;
 
@@ -16,7 +13,17 @@ public interface IMeetingService {
 
     Meeting findOne(long id);
 
+    List<Meeting> findByUser(User user);
+
     void save(Meeting meeting);
+
+    void update(Meeting meeting);
+
+    void delete(Meeting meeting);
+
+    void updatePlaces(Meeting meeting);
+
+    void addPlace(long meetingId, MeetingPlace meetingPlace);
 
     void addPlace(Meeting meeting, Place place);
 
@@ -25,6 +32,8 @@ public interface IMeetingService {
     void removePlace(Meeting meeting, Place place);
 
     void removePlaces(Meeting meeting, List<Place> places);
+
+    void addUser(long meetingId, MeetingUser meetingUser);
 
     void addUser(Meeting meeting, User user);
 

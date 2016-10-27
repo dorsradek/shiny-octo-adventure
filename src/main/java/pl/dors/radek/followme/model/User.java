@@ -1,5 +1,7 @@
 package pl.dors.radek.followme.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -41,6 +43,7 @@ public class User {
         this.name = name;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user")
     public List<MeetingUser> getMeetingUsers() {
         return meetingUsers;
