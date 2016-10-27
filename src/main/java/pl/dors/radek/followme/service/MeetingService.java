@@ -8,6 +8,7 @@ import pl.dors.radek.followme.repository.*;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -35,19 +36,23 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void save(Meeting meeting, List<User> users, List<Place> places) {
-        places.forEach(placeRepository::save);
-        users.forEach(userRepository::save);
+    public Meeting findOne(long id) {
+        return Optional.ofNullable(meetingRepository.findOne(id)).orElseThrow(() -> new RuntimeException("Element not found"));
+    }
 
-        createMeetingPlaces(meeting, places);
-        createMeetingUsers(meeting, users);
+    @Override
+    public void save(Meeting meeting) {
+        meeting.getMeetingPlaces().stream().forEach(meetingPlace -> meetingPlace.setMeeting(meeting));
+        meeting.getMeetingUsers().stream().forEach(meetingUser -> meetingUser.setMeeting(meeting));
+        meeting.getMeetingPlaces().stream().map(meetingPlace -> meetingPlace.getPlace()).forEach(placeRepository::save);
+        meeting.getMeetingUsers().stream().map(meetingUser -> meetingUser.getUser()).forEach(userRepository::save);
 
         meetingRepository.save(meeting);
     }
 
     @Override
     public void addPlace(Meeting meeting, Place place) {
-        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
+        meeting = meetingRepository.findOne(meeting.getId());
         placeRepository.save(place);
         createMeetingPlace(meeting, place);
         meetingRepository.save(meeting);
@@ -55,7 +60,7 @@ public class MeetingService implements IMeetingService {
 
     @Override
     public void addPlaces(Meeting meeting, List<Place> places) {
-        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
+        meeting = meetingRepository.findOne(meeting.getId());
         places.forEach(placeRepository::save);
         createMeetingPlaces(meeting, places);
         meetingRepository.save(meeting);

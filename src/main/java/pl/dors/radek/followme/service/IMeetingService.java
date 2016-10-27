@@ -14,7 +14,9 @@ public interface IMeetingService {
 
     List<Meeting> findAll();
 
-    void save(Meeting meeting, List<User> users, List<Place> places);
+    Meeting findOne(long id);
+
+    void save(Meeting meeting);
 
     void addPlace(Meeting meeting, Place place);
 
