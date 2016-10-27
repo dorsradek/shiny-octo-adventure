@@ -1,9 +1,7 @@
 package pl.dors.radek.followme.service;
 
 import org.mockito.Mockito;
-import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.Place;
-import pl.dors.radek.followme.model.User;
+import pl.dors.radek.followme.model.*;
 import pl.dors.radek.followme.repository.MeetingRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.UserRepository;
@@ -64,9 +62,13 @@ public class MeetingServiceCommon {
         Meeting meeting = new Meeting("M1");
         User user = new User("U1");
         Place place = new Place("P1", 1, 2);
-        List<User> users = Arrays.asList(user);
-        List<Place> places = Arrays.asList(place);
-        meetingService.save(meeting, users, places);
+        MeetingPlace meetingPlace = new MeetingPlace();
+        meetingPlace.setPlace(place);
+        MeetingUser meetingUser = new MeetingUser();
+        meetingUser.setUser(user);
+        meeting.getMeetingPlaces().add(meetingPlace);
+        meeting.getMeetingUsers().add(meetingUser);
+        meetingService.save(meeting);
         assertThat(meeting.getMeetingUsers()).hasSize(1);
         assertThat(meeting.getMeetingPlaces()).hasSize(1);
         assertThat(meeting.getMeetingUsers().get(0).getUser().getName()).isEqualTo("U1");

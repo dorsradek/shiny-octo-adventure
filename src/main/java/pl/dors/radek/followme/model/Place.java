@@ -1,5 +1,7 @@
 package pl.dors.radek.followme.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class Place {
     private String name;
     private double x;
     private double y;
+    @JsonIgnore
     private List<MeetingPlace> meetingPlaces;
 
     public Place() {
@@ -63,6 +66,7 @@ public class Place {
         this.y = y;
     }
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.place", cascade = CascadeType.ALL)
     public List<MeetingPlace> getMeetingPlaces() {
         return meetingPlaces;

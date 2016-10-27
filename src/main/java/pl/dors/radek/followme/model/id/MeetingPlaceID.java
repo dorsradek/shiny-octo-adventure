@@ -1,5 +1,6 @@
 package pl.dors.radek.followme.model.id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.Place;
 
@@ -9,6 +10,7 @@ import javax.persistence.ManyToOne;
 @Embeddable
 public class MeetingPlaceID implements java.io.Serializable {
 
+    @JsonIgnore
     private Meeting meeting;
     private Place place;
 

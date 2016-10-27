@@ -41,6 +41,7 @@ public class MeetingController {
     @RequestMapping(value = "/{meetingId}", method = RequestMethod.GET)
     public ResponseEntity<Meeting> showDetails(@PathVariable("meetingId") long meetingId) {
         Meeting meeting = meetingService.findOne(meetingId);
-        return new ResponseEntity<>(meeting, HttpStatus.OK);
+        ResponseEntity<Meeting> asd =  new ResponseEntity<>(meeting, HttpStatus.OK);
+        return asd;
     }
 }
