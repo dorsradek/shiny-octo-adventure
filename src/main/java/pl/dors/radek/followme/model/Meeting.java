@@ -1,6 +1,7 @@
 package pl.dors.radek.followme.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class Meeting {
 
     private Long id;
     private String name;
+    private LocalDateTime lastUpdate;
+    private boolean active;
     private List<MeetingPlace> meetingPlaces = new ArrayList<>();
     private List<MeetingUser> meetingUsers = new ArrayList<>();
 
@@ -47,6 +50,24 @@ public class Meeting {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "LAST_UPDATE")
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    @Column(name = "ACTIVE")
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL, orphanRemoval = true)

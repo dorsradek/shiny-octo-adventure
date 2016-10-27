@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.dors.radek.followme.model.Meeting;
+import pl.dors.radek.followme.model.MeetingPlace;
+import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.service.IMeetingService;
 
 import java.util.List;
@@ -31,17 +33,34 @@ public class MeetingController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<Void> create(@RequestBody Meeting meeting, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Void> create(@RequestBody Meeting meeting, UriComponentsBuilder uriComponentsBuilder) {
         meetingService.save(meeting);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/meetings/{id}").buildAndExpand(meeting.getId()).toUri());
+        headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meeting.getId()).toUri());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<Void> update(@RequestBody Meeting meeting, UriComponentsBuilder uriComponentsBuilder) {
+        meetingService.update(meeting);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meeting.getId()).toUri());
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{meetingId}", method = RequestMethod.GET)
     public ResponseEntity<Meeting> showDetails(@PathVariable("meetingId") long meetingId) {
         Meeting meeting = meetingService.findOne(meetingId);
-        ResponseEntity<Meeting> asd =  new ResponseEntity<>(meeting, HttpStatus.OK);
-        return asd;
+        ResponseEntity<Meeting> meetingEntity = new ResponseEntity<>(meeting, HttpStatus.OK);
+        return meetingEntity;
     }
+
+    @RequestMapping(value = "/{meetingId}/addPlace", method = RequestMethod.POST)
+    public ResponseEntity<Void> addPlace(@PathVariable("meetingId") long meetingId, @RequestBody MeetingPlace meetingPlace, UriComponentsBuilder uriComponentsBuilder) {
+        meetingService.addPlace(meetingId, meetingPlace);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meetingId).toUri());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
 }

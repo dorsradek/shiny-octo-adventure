@@ -1,9 +1,9 @@
 package pl.dors.radek.followme.service;
 
 import org.springframework.stereotype.Service;
-import pl.dors.radek.followme.helper.MeetingHelper;
 import pl.dors.radek.followme.model.*;
 import pl.dors.radek.followme.repository.*;
+import pl.dors.radek.followme.specification.MeetingSpecification;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -23,11 +23,12 @@ public class MeetingService implements IMeetingService {
     private MeetingUserRepository meetingUserRepository;
     private MeetingPlaceRepository meetingPlaceRepository;
 
-    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, UserRepository userRepository, MeetingUserRepository meetingUserRepository) {
+    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, UserRepository userRepository, MeetingUserRepository meetingUserRepository, MeetingPlaceRepository meetingPlaceRepository) {
         this.meetingRepository = meetingRepository;
         this.placeRepository = placeRepository;
         this.userRepository = userRepository;
         this.meetingUserRepository = meetingUserRepository;
+        this.meetingPlaceRepository = meetingPlaceRepository;
     }
 
     @Override
@@ -41,12 +42,67 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
+    public List<Meeting> findByUser(User user) {
+        return meetingRepository.findAll(MeetingSpecification.findByUser(user));
+    }
+
+    @Override
     public void save(Meeting meeting) {
         meeting.getMeetingPlaces().stream().forEach(meetingPlace -> meetingPlace.setMeeting(meeting));
         meeting.getMeetingUsers().stream().forEach(meetingUser -> meetingUser.setMeeting(meeting));
         meeting.getMeetingPlaces().stream().map(meetingPlace -> meetingPlace.getPlace()).forEach(placeRepository::save);
         meeting.getMeetingUsers().stream().map(meetingUser -> meetingUser.getUser()).forEach(userRepository::save);
 
+        meeting.setLastUpdate(LocalDateTime.now());
+        meeting.setActive(true);
+        meetingRepository.save(meeting);
+    }
+
+    @Override
+    public void update(Meeting meeting) {
+        Meeting meetingDb = meetingRepository.findOne(meeting.getId());
+        meetingDb.setName(meeting.getName());
+        meetingDb.setLastUpdate(LocalDateTime.now());
+        meetingDb.setActive(true);
+        meetingRepository.save(meetingDb);
+    }
+
+    @Override
+    public void delete(Meeting meeting) {
+        meeting = meetingRepository.findOne(meeting.getId());
+        meeting.setLastUpdate(LocalDateTime.now());
+        meeting.setActive(false);
+        meetingRepository.save(meeting);
+    }
+
+    @Override
+    public void updatePlaces(Meeting meeting) {
+        Meeting meetingDb = meetingRepository.findOne(meeting.getId());
+        //new places
+        meeting.getMeetingPlaces().stream()
+                .filter(meetingPlace -> meetingDb.getMeetingPlaces().stream()
+                                .noneMatch(meetingPlace1 -> meetingPlace.getPlace().getId().equals(meetingPlace1.getPlace().getId())))
+                .forEach(meetingPlace -> {
+                    placeRepository.save(meetingPlace.getPlace());
+                    meetingDb.getMeetingPlaces().add(meetingPlace);
+                });
+        //remove places
+        meetingDb.getMeetingPlaces().stream()
+                .filter(meetingPlace -> meeting.getMeetingPlaces().stream()
+                        .noneMatch(meetingPlace1 -> meetingPlace.getPlace().getId().equals(meetingPlace1.getPlace().getId())))
+                .forEach(meetingPlace -> {
+                    meetingPlaceRepository.delete(meetingPlace);
+                    meetingDb.getMeetingPlaces().remove(meetingPlace);
+                });
+        meetingRepository.save(meeting);
+    }
+
+    @Override
+    public void addPlace(long meetingId, MeetingPlace meetingPlace) {
+        Meeting meeting = meetingRepository.findOne(meetingId);
+        placeRepository.save(meetingPlace.getPlace());
+        meetingPlace.setMeeting(meeting);
+        meeting.getMeetingPlaces().add(meetingPlace);
         meetingRepository.save(meeting);
     }
 
@@ -83,8 +139,17 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
+    public void addUser(long meetingId, MeetingUser meetingUser) {
+        Meeting meeting = meetingRepository.findOne(meetingId);
+        userRepository.save(meetingUser.getUser());
+        meetingUser.setMeeting(meeting);
+        meeting.getMeetingUsers().add(meetingUser);
+        meetingRepository.save(meeting);
+    }
+
+    @Override
     public void addUser(Meeting meeting, User user) {
-        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
+        meeting = meetingRepository.findOne(meeting.getId());
         userRepository.save(user);
         createMeetingUser(meeting, user);
         meetingRepository.save(meeting);
@@ -92,7 +157,7 @@ public class MeetingService implements IMeetingService {
 
     @Override
     public void addUsers(Meeting meeting, List<User> users) {
-        MeetingHelper.copyWithoutIdAndCollections(meetingRepository.findOne(meeting.getId()), meeting);
+        meeting = meetingRepository.findOne(meeting.getId());
         users.forEach(userRepository::save);
         createMeetingUsers(meeting, users);
         meetingRepository.save(meeting);
