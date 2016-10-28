@@ -1,5 +1,6 @@
 package pl.dors.radek.followme.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pl.dors.radek.followme.model.id.MeetingPlaceID;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import javax.persistence.*;
                 joinColumns = @JoinColumn(name = "PLACE_ID"))})
 public class MeetingPlace {
 
+    @JsonIgnore
     private MeetingPlaceID pk = new MeetingPlaceID();
     private boolean owner;
 
@@ -37,6 +39,7 @@ public class MeetingPlace {
         this.owner = owner;
     }
 
+    @JsonIgnore
     @Transient
     public Meeting getMeeting() {
         return getPk().getMeeting();
