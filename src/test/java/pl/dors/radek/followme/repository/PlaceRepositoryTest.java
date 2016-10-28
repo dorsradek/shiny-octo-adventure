@@ -50,7 +50,7 @@ public class PlaceRepositoryTest {
 
     @Test
     public void findByNameTest() throws Exception {
-        List<Place> result = placeRepository.findAll(PlaceSpecification.findByName("Stefan"));
+        List<Place> result = placeRepository.findByName("Stefan");
 
         assertThat(result).hasSize(1);
         assertThat(result).containsOnly(places.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());

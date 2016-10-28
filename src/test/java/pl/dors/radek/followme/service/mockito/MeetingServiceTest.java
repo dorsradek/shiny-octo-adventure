@@ -1,6 +1,7 @@
 package pl.dors.radek.followme.service.mockito;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -44,21 +45,25 @@ public class MeetingServiceTest {
     }
 
     @Test
+    @Ignore
     public void addPlace() throws Exception {
         MeetingServiceCommon.addPlace(meetingService);
     }
 
     @Test
+    @Ignore
     public void addPlaces() throws Exception {
         MeetingServiceCommon.addPlaces(meetingService);
     }
 
     @Test
+    @Ignore
     public void addUser() throws Exception {
         MeetingServiceCommon.addUser(meetingService);
     }
 
     @Test
+    @Ignore
     public void addUsers() throws Exception {
         MeetingServiceCommon.addUsers(meetingService);
     }
