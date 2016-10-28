@@ -14,7 +14,7 @@ public class ExceptionHandlerAdvice {
     public ResponseEntity handleException(Exception e) {
         ErrorResponse error = new ErrorResponse();
         error.setErrorCode(HTTP_STATUS.value());
-        error.setMessage(e.getMessage());
+        error.setMessage("Error");
         return new ResponseEntity<>(error, HTTP_STATUS);
     }
 

@@ -3,7 +3,6 @@ package pl.dors.radek.followme.service;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.User;
 import pl.dors.radek.followme.repository.UserRepository;
-import pl.dors.radek.followme.specification.UserSpecification;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -29,12 +28,13 @@ public class UserService implements IUserService {
 
     @Override
     public List<User> findByName(String name) {
-        return userRepository.findAll(UserSpecification.findByName(name));
+        return userRepository.findByName(name);
     }
 
     @Override
     public User findOne(Optional<Long> userId) {
-        return Optional.ofNullable(userRepository.findOne(UserSpecification.findOne(userId))).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")))
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface PlaceRepository extends CrudRepository<Place, Long> {
 
-    public List<Place> findByName(String name);
+    List<Place> findByName(String name);
 
     List<Place> findAll();
 
