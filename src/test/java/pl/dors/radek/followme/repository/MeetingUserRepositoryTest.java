@@ -88,8 +88,8 @@ public class MeetingUserRepositoryTest {
 
     @Test
     public void findByMeeting() throws Exception {
-        List<MeetingUser> result = meetingUserRepository.findAll(MeetingUserSpecification.findByMeeting(
-                meetings.stream().filter(m -> m.getName().equals("m2")).findAny().get()));
+        List<MeetingUser> result = meetingUserRepository.findByMeetingId(
+                meetings.stream().filter(m -> m.getName().equals("m2")).findAny().get().getId());
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getUser().getName()).isEqualTo("User3");

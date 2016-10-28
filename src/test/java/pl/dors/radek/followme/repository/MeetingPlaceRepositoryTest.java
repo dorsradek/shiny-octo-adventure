@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingPlace;
 import pl.dors.radek.followme.model.Place;
-import pl.dors.radek.followme.specification.MeetingPlaceSpecification;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -88,8 +87,8 @@ public class MeetingPlaceRepositoryTest {
 
     @Test
     public void findByMeeting() throws Exception {
-        List<MeetingPlace> result = meetingPlaceRepository.findAll(MeetingPlaceSpecification.findByMeeting(
-                meetings.stream().filter(m -> m.getName().equals("m2")).findAny().get()));
+        List<MeetingPlace> result = meetingPlaceRepository.findByMeetingId(
+                meetings.stream().filter(m -> m.getName().equals("m2")).findAny().get().getId());
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getPlace().getName()).isEqualTo("Place3");

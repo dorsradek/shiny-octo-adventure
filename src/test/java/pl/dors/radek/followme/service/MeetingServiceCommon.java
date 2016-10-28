@@ -53,12 +53,12 @@ public class MeetingServiceCommon {
                 .thenReturn(m1);
     }
 
-    public static void findAll(MeetingService meetingService) throws Exception {
+    public static void findAll(IMeetingService meetingService) throws Exception {
         assertThat(meetingService.findAll()).hasSize(1);
         assertThat(meetingService.findAll().get(0).getName()).isEqualTo("M1");
     }
 
-    public static void save(MeetingService meetingService) throws Exception {
+    public static void save(IMeetingService meetingService) throws Exception {
         Meeting meeting = new Meeting("M1");
         User user = new User("U1");
         Place place = new Place("P1", 1, 2);
@@ -77,7 +77,8 @@ public class MeetingServiceCommon {
         assertThat(meeting.getMeetingPlaces().get(0).getPlace().getId()).isNotNull();
     }
 
-    public static void addPlace(MeetingService meetingService) {
+    @Deprecated
+    public static void addPlace(IMeetingService meetingService) {
         Meeting meeting = new Meeting("M1");
         meeting.setId(44L);
         Place p1 = new Place("P1", 1, 2);
@@ -87,7 +88,8 @@ public class MeetingServiceCommon {
         assertThat(meeting.getMeetingPlaces()).extractingResultOf("getPlace").extracting("name").contains("P1");
     }
 
-    public static void addPlaces(MeetingService meetingService) {
+    @Deprecated
+    public static void addPlaces(IMeetingService meetingService) {
         Meeting meeting = new Meeting("M1");
         meeting.setId(44L);
         Place p1 = new Place("P1", 1, 2);
@@ -99,7 +101,8 @@ public class MeetingServiceCommon {
         assertThat(meeting.getMeetingPlaces()).extractingResultOf("getPlace").extracting("name").contains("P1", "P2");
     }
 
-    public static void addUser(MeetingService meetingService) {
+    @Deprecated
+    public static void addUser(IMeetingService meetingService) {
         Meeting meeting = new Meeting("M1");
         meeting.setId(44L);
         User u1 = new User("U2");
@@ -109,7 +112,8 @@ public class MeetingServiceCommon {
         assertThat(meeting.getMeetingUsers()).extractingResultOf("getUser").extracting("name").contains("U2");
     }
 
-    public static void addUsers(MeetingService meetingService) {
+    @Deprecated
+    public static void addUsers(IMeetingService meetingService) {
         Meeting meeting = new Meeting("M1");
         meeting.setId(44L);
         User u1 = new User("U1");

@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 
 /**
  * Created by rdors on 2016-10-22.
@@ -35,10 +36,8 @@ public class PlaceServiceTest {
     public void setUp() throws Exception {
         Mockito.when(this.placeRepository.findAll())
                 .thenReturn(Arrays.asList(new Place("Place1", 12, 13)));
-        Mockito.when(this.placeRepository.findAll(any(Example.class)))
+        Mockito.when(this.placeRepository.findByName(anyString()))
                 .thenReturn(Arrays.asList(new Place("Place2", 10, 9)));
-        Mockito.when(this.placeRepository.findAll(any(Specification.class)))
-                .thenReturn(Arrays.asList(new Place("Place3", 11, 15)));
     }
 
     @Test
@@ -48,16 +47,10 @@ public class PlaceServiceTest {
     }
 
     @Test
-    public void findByNameExample() throws Exception {
-        List<Place> places = placeService.findByNameExample("name");
+    public void findByName() throws Exception {
+        List<Place> places = placeService.findByName("name");
         assertThat(places).hasSize(1);
         assertThat(places.get(0).getName()).isEqualTo("Place2");
     }
 
-    @Test
-    public void findByNameSpecification() throws Exception {
-        List<Place> places = placeService.findByNameSpecification("name");
-        assertThat(places).hasSize(1);
-        assertThat(places.get(0).getName()).isEqualTo("Place3");
-    }
 }
