@@ -5,6 +5,8 @@ spring:
     schema: classpath:/schema.sql
   application:
     name: follow-me
+  jpa:
+    show-sql: true
 server:
   port: 8081
 
