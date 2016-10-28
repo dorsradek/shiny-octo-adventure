@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.model.User;
-import pl.dors.radek.followme.specification.PlaceSpecification;
 import pl.dors.radek.followme.specification.UserSpecification;
 
 import javax.persistence.EntityManager;
