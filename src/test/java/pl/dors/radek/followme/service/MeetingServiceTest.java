@@ -1,7 +1,6 @@
 package pl.dors.radek.followme.service;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,30 +41,6 @@ public class MeetingServiceTest {
     @Test
     public void save() throws Exception {
         MeetingServiceCommon.save(meetingService);
-    }
-
-    @Test
-    @Ignore
-    public void addPlace() throws Exception {
-        MeetingServiceCommon.addPlace(meetingService);
-    }
-
-    @Test
-    @Ignore
-    public void addPlaces() throws Exception {
-        MeetingServiceCommon.addPlaces(meetingService);
-    }
-
-    @Test
-    @Ignore
-    public void addUser() throws Exception {
-        MeetingServiceCommon.addUser(meetingService);
-    }
-
-    @Test
-    @Ignore
-    public void addUsers() throws Exception {
-        MeetingServiceCommon.addUsers(meetingService);
     }
 
 }

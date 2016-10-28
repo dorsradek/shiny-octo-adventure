@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingUser;
 import pl.dors.radek.followme.model.User;
-import pl.dors.radek.followme.specification.MeetingUserSpecification;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
