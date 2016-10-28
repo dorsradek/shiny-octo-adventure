@@ -7,6 +7,7 @@ import pl.dors.radek.followme.specification.UserSpecification;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -29,6 +30,11 @@ public class UserService implements IUserService {
     @Override
     public List<User> findByName(String name) {
         return userRepository.findAll(UserSpecification.findByName(name));
+    }
+
+    @Override
+    public User findOne(Optional<Long> userId) {
+        return Optional.ofNullable(userRepository.findOne(UserSpecification.findOne(userId))).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 }

@@ -3,6 +3,7 @@ package pl.dors.radek.followme.service;
 import pl.dors.radek.followme.model.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -11,41 +12,62 @@ public interface IMeetingService {
 
     List<Meeting> findAll();
 
-    Meeting findOne(long id);
+    List<Meeting> findAllActive();
 
-    List<Meeting> findByUser(User user);
+    Meeting findOne(Optional<Long> meetingId);
+
+    List<Meeting> findByUserId(Optional<Long> userId);
+
+    List<Meeting> findByUserIdActive(Optional<Long> userId);
 
     void save(Meeting meeting);
 
     void update(Meeting meeting);
 
-    void delete(Meeting meeting);
+    void delete(Optional<Long> meetingId);
 
-    void updatePlaces(Meeting meeting);
+    void addPlace(Optional<Long> meetingId, MeetingPlace meetingPlace);
 
-    void addPlace(long meetingId, MeetingPlace meetingPlace);
+    void addPlaces(Optional<Long> meetingId, List<MeetingPlace> meetingPlaces);
 
-    void addPlace(Meeting meeting, Place place);
+    void deletePlace(Optional<Long> meetingId, Optional<Long> placeId);
 
-    void addPlaces(Meeting meeting, List<Place> places);
+    void deletePlaces(Optional<Long> meetingId, List<Optional<Long>> placesIds);
 
-    void removePlace(Meeting meeting, Place place);
+    void addUser(Optional<Long> meetingId, MeetingUser meetingUser);
 
-    void removePlaces(Meeting meeting, List<Place> places);
-
-    void addUser(long meetingId, MeetingUser meetingUser);
-
-    void addUser(Meeting meeting, User user);
-
-    void addUsers(Meeting meeting, List<User> users);
-
-    void removeUser(Meeting meeting, User user);
-
-    void removeUsers(Meeting meeting, List<User> users);
+    void addUsers(Optional<Long> meetingId, List<MeetingUser> meetingUsers);
 
     void updateUserData(Meeting meeting, User user, UserStatus userStatus, double x, double y, boolean updateLastUpdate);
 
     void updateUserData(Meeting meeting, User user, UserStatus userStatus, boolean updateLastUpdate);
 
     void updateUserData(Meeting meeting, User user, double x, double y, boolean updateLastUpdate);
+
+    @Deprecated
+    void removeUser(Meeting meeting, User user);
+
+    @Deprecated
+    void removeUsers(Meeting meeting, List<User> users);
+
+    @Deprecated
+    void updatePlaces(Meeting meeting);
+
+    @Deprecated
+    void removePlaces(Meeting meeting, List<Place> places);
+
+    @Deprecated
+    void addPlace(Meeting meeting, Place place);
+
+    @Deprecated
+    void addPlaces(Meeting meeting, List<Place> places);
+
+    @Deprecated
+    void deletePlace(Meeting meeting, Place place);
+
+    @Deprecated
+    void addUser(Meeting meeting, User user);
+
+    @Deprecated
+    void addUsers(Meeting meeting, List<User> users);
 }

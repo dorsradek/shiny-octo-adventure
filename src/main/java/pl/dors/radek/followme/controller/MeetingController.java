@@ -1,6 +1,5 @@
 package pl.dors.radek.followme.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingPlace;
-import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.service.IMeetingService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -22,7 +21,6 @@ public class MeetingController {
 
     private IMeetingService meetingService;
 
-    @Autowired
     public MeetingController(IMeetingService meetingService) {
         this.meetingService = meetingService;
     }
@@ -48,16 +46,21 @@ public class MeetingController {
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{meetingId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Meeting> delete(@PathVariable("meetingId") long meetingId) {
+        meetingService.delete(Optional.ofNullable(meetingId));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{meetingId}", method = RequestMethod.GET)
     public ResponseEntity<Meeting> showDetails(@PathVariable("meetingId") long meetingId) {
-        Meeting meeting = meetingService.findOne(meetingId);
-        ResponseEntity<Meeting> meetingEntity = new ResponseEntity<>(meeting, HttpStatus.OK);
-        return meetingEntity;
+        Meeting meeting = meetingService.findOne(Optional.ofNullable(meetingId));
+        return new ResponseEntity<>(meeting, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{meetingId}/addPlace", method = RequestMethod.POST)
     public ResponseEntity<Void> addPlace(@PathVariable("meetingId") long meetingId, @RequestBody MeetingPlace meetingPlace, UriComponentsBuilder uriComponentsBuilder) {
-        meetingService.addPlace(meetingId, meetingPlace);
+        meetingService.addPlace(Optional.ofNullable(meetingId), meetingPlace);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meetingId).toUri());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
