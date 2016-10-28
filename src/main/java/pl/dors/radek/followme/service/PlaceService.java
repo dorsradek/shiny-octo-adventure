@@ -1,10 +1,8 @@
 package pl.dors.radek.followme.service;
 
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.repository.PlaceRepository;
-import pl.dors.radek.followme.specification.PlaceSpecification;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -28,16 +26,8 @@ public class PlaceService implements IPlaceService {
     }
 
     @Override
-    public List<Place> findByNameExample(String name) {
-        Place place = new Place();
-        place.setName(name);
-        Example<Place> example = Example.of(place);
-        return placeRepository.findAll(example);
-    }
-
-    @Override
-    public List<Place> findByNameSpecification(String name) {
-        return placeRepository.findAll(PlaceSpecification.findByName(name));
+    public List<Place> findByName(String name) {
+        return placeRepository.findByName(name);
     }
 
 }

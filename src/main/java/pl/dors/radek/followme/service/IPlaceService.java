@@ -11,7 +11,5 @@ public interface IPlaceService {
 
     List<Place> findAll();
 
-    List<Place> findByNameExample(String name);
-
-    List<Place> findByNameSpecification(String name);
+    List<Place> findByName(String name);
 }
