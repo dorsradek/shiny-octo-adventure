@@ -1,6 +1,8 @@
 package pl.dors.radek.followme.service;
 
-import pl.dors.radek.followme.model.*;
+import pl.dors.radek.followme.model.Meeting;
+import pl.dors.radek.followme.model.MeetingPlace;
+import pl.dors.radek.followme.model.MeetingUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,13 +24,15 @@ public interface IMeetingService {
 
     void save(Meeting meeting);
 
-    void update(Meeting meeting);
+    void update(Optional<Long> meetingId, Meeting meeting);
 
     void delete(Optional<Long> meetingId);
 
     void addPlace(Optional<Long> meetingId, MeetingPlace meetingPlace);
 
     void addPlaces(Optional<Long> meetingId, List<MeetingPlace> meetingPlaces);
+
+    void updatePlace(Optional<Long> meetingId, Optional<Long> placeId, MeetingPlace meetingPlace);
 
     void deletePlace(Optional<Long> meetingId, Optional<Long> placeId);
 
@@ -38,36 +42,13 @@ public interface IMeetingService {
 
     void addUsers(Optional<Long> meetingId, List<MeetingUser> meetingUsers);
 
-    void updateUserData(Meeting meeting, User user, UserStatus userStatus, double x, double y, boolean updateLastUpdate);
+    void deleteUser(Optional<Long> meetingId, Optional<Long> userId);
 
-    void updateUserData(Meeting meeting, User user, UserStatus userStatus, boolean updateLastUpdate);
+    void deleteUsers(Optional<Long> meetingId, List<Optional<Long>> usersIds);
 
-    void updateUserData(Meeting meeting, User user, double x, double y, boolean updateLastUpdate);
-
-    @Deprecated
-    void removeUser(Meeting meeting, User user);
-
-    @Deprecated
-    void removeUsers(Meeting meeting, List<User> users);
+    void updateUser(Optional<Long> meetingId, Optional<Long> userId, MeetingUser meetingUser);
 
     @Deprecated
     void updatePlaces(Meeting meeting);
 
-    @Deprecated
-    void removePlaces(Meeting meeting, List<Place> places);
-
-    @Deprecated
-    void addPlace(Meeting meeting, Place place);
-
-    @Deprecated
-    void addPlaces(Meeting meeting, List<Place> places);
-
-    @Deprecated
-    void deletePlace(Meeting meeting, Place place);
-
-    @Deprecated
-    void addUser(Meeting meeting, User user);
-
-    @Deprecated
-    void addUsers(Meeting meeting, List<User> users);
 }

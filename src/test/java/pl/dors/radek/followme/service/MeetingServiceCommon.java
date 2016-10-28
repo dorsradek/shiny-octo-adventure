@@ -7,7 +7,6 @@ import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.UserRepository;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -77,51 +76,4 @@ public class MeetingServiceCommon {
         assertThat(meeting.getMeetingPlaces().get(0).getPlace().getId()).isNotNull();
     }
 
-    @Deprecated
-    public static void addPlace(IMeetingService meetingService) {
-        Meeting meeting = new Meeting("M1");
-        meeting.setId(44L);
-        Place p1 = new Place("P1", 1, 2);
-        meetingService.addPlace(meeting, p1);
-        assertThat(meeting.getId()).isEqualTo(44L);
-        assertThat(meeting.getMeetingPlaces()).hasSize(1);
-        assertThat(meeting.getMeetingPlaces()).extractingResultOf("getPlace").extracting("name").contains("P1");
-    }
-
-    @Deprecated
-    public static void addPlaces(IMeetingService meetingService) {
-        Meeting meeting = new Meeting("M1");
-        meeting.setId(44L);
-        Place p1 = new Place("P1", 1, 2);
-        Place p2 = new Place("P2", 1, 2);
-        List<Place> places = Arrays.asList(p1, p2);
-        meetingService.addPlaces(meeting, places);
-        assertThat(meeting.getId()).isEqualTo(44L);
-        assertThat(meeting.getMeetingPlaces()).hasSize(2);
-        assertThat(meeting.getMeetingPlaces()).extractingResultOf("getPlace").extracting("name").contains("P1", "P2");
-    }
-
-    @Deprecated
-    public static void addUser(IMeetingService meetingService) {
-        Meeting meeting = new Meeting("M1");
-        meeting.setId(44L);
-        User u1 = new User("U2");
-        meetingService.addUser(meeting, u1);
-        assertThat(meeting.getId()).isEqualTo(44L);
-        assertThat(meeting.getMeetingUsers()).hasSize(1);
-        assertThat(meeting.getMeetingUsers()).extractingResultOf("getUser").extracting("name").contains("U2");
-    }
-
-    @Deprecated
-    public static void addUsers(IMeetingService meetingService) {
-        Meeting meeting = new Meeting("M1");
-        meeting.setId(44L);
-        User u1 = new User("U1");
-        User u2 = new User("U2");
-        List<User> users = Arrays.asList(u1, u2);
-        meetingService.addUsers(meeting, users);
-        assertThat(meeting.getId()).isEqualTo(44L);
-        assertThat(meeting.getMeetingUsers()).hasSize(2);
-        assertThat(meeting.getMeetingUsers()).extractingResultOf("getUser").extracting("name").contains("U1", "U2");
-    }
 }
