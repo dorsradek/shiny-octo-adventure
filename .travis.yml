@@ -1,8 +1,15 @@
 language: java
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 sudo: required
-
 services:
-  - docker
+- docker
+deploy:
+  provider: openshift
+  user: dorsradek
+  password:
+    secure: l6IuSmXjUWyOxNN8z9KGxWVWKQLZkuYiSwsKCulWpUXshdAoVmRHkUVVQtbz6PC1v/ffxPXvjIjTs8+CKdmqxVwynKBVNs0v+/ELc2nfJwcEl5d6q9XBYg5nQ7AJgaMKKjSQr4OpeQL5ZAjiZbUQrFG9TmZUI24/HuQgVahWWYpsCDzoA03k5wDndBdbWTGIH7Mg9WayuDK8wOP9Vig5Ag10urbaZKUX9TC8z3B09/LrGHszvQgzemJCFN3m1YshRmCd5PxScw3cASAhcBe1b9kiUDoe9fDO4q4fH3gJid5v0dLmy2byyvY+/Tf1GtCOalNwnsOnskekrmH+/FduKad/+p38t3skZ7JU8iv6wA77M5qMzkygGPKe2Norw7ZiO36YPE50HQC3YNHXcm09ei6ZwNFeGkUi+7cTV5mDZVNjqOXLxAjchQKMRKOQ000gyJVlyWVlexiU/y1pAhm52HtiMHZReb0QxLbwrQnSd70LHTVtvM+u9A054UscDH5R4XLmGIj7XbwyE3DSVjUB/addmjffsE7GxiPkZQqgAl+V/3jgKvM5zzBERoXodZX5ldJBF/eF0ZRJrGqQ+i+Eyd7KdjS6sspodWIuMNYnXLnf4DlgFvMnffNs8mB0SXINnykPpLdHVqFyiwDgje2SRv7gVbqsfgpsfcU+K4sslVc=
+  app: shiny-octo-adventure
+  domain: rdors
+  on:
+    repo: dorsradek/shiny-octo-adventure
