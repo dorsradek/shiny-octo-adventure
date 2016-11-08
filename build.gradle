@@ -35,7 +35,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.h2database:h2')
-	compile('ccom.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.4')
+	compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
 	runtime('org.postgresql:postgresql')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
