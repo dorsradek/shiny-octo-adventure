@@ -7,8 +7,12 @@ spring:
     name: follow-me
   jpa:
     show-sql: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
 server:
   port: 8081
+
 
 #spring:
 #  data:
