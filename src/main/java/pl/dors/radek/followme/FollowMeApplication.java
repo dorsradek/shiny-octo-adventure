@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 import pl.dors.radek.followme.model.security.Authority;
 import pl.dors.radek.followme.model.security.AuthorityName;
 import pl.dors.radek.followme.model.security.User;
@@ -17,11 +19,17 @@ import java.util.Arrays;
 import java.util.Date;
 
 @SpringBootApplication
-public class FollowMeApplication implements CommandLineRunner {
+public class FollowMeApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FollowMeApplication.class, args);
     }
+
+}
+
+@Component
+@Profile("!test")
+class JobCommandLineRunner implements CommandLineRunner {
 
     @Autowired
     private UserRepository userRepository;

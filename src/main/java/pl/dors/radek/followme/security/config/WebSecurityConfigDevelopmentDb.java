@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @Profile("development-db")
-class WebSecurityConfigDevelopmentDb extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfigDevelopmentDb extends WebSecurityConfigurerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigDevelopmentDb.class);
 
