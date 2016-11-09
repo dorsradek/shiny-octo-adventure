@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar build/libs/shiny-octo-adventure-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar -Dspring.profiles.active=production build/libs/shiny-octo-adventure-0.0.1-SNAPSHOT.jar

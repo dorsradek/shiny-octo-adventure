@@ -10,8 +10,17 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+---
+spring:
+  profiles: development
 server:
   port: 8081
+---
+spring:
+    profiles: production
+    datasource:
+      url: ${JDBC_DATABASE_URL}
+      driver-class-name: org.postgresql.Driver
 
 
 #spring:
