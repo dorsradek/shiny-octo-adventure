@@ -25,15 +25,29 @@ server:
   port: 8081
 ---
 spring:
-    profiles: production
-    datasource:
-      url: ${JDBC_DATABASE_URL}
-      driver-class-name: org.postgresql.Driver
-    jpa:
-      hibernate:
-        ddl-auto: update
+  profiles: development-db
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
 
-#spring:
+server:
+  port: 8081
+---
+spring:
+  profiles: production
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+#spring:jdbc:postgresql://localhost:5432/hmdb_dev
 #  data:
 #    mongodb:
 #      uri: mongodb://localhost/test

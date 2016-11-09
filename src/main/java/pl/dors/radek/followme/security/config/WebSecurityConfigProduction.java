@@ -1,4 +1,4 @@
-package pl.dors.radek.followme.security;
+package pl.dors.radek.followme.security.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +17,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.dors.radek.followme.security.JwtAuthenticationEntryPoint;
+import pl.dors.radek.followme.security.JwtAuthenticationTokenFilter;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Profile("production")
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigDevelopment.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigProduction.class);
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;

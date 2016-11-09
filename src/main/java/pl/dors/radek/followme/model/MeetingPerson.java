@@ -24,7 +24,7 @@ public class MeetingPerson {
     private double x;
     private double y;
     private LocalDateTime lastUpdate;
-    //private UserStatus userStatus;
+    private UserStatus userStatus;
 
     @EmbeddedId
     public MeetingPersonID getPk() {
@@ -71,13 +71,15 @@ public class MeetingPerson {
         this.lastUpdate = lastUpdate;
     }
 
-//    public UserStatus getUserStatus() {
-//        return userStatus;
-//    }
+    @Column(name = "USER_STATUS")
+    @Enumerated(EnumType.STRING)
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
 
-//    public void setUserStatus(UserStatus userStatus) {
-//        this.userStatus = userStatus;
-//    }
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
+    }
 
     @JsonIgnore
     @Transient
