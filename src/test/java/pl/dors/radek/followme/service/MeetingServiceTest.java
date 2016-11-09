@@ -8,8 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.repository.MeetingRepository;
+import pl.dors.radek.followme.repository.PersonRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
-import pl.dors.radek.followme.repository.UserRepository;
 
 /**
  * Created by rdors on 2016-10-26.
@@ -25,12 +25,12 @@ public class MeetingServiceTest {
     private MeetingRepository meetingRepository;
     @MockBean(name = "placeRepository")
     private PlaceRepository placeRepository;
-    @MockBean(name = "userRepository")
-    private UserRepository userRepository;
+    @MockBean(name = "personRepository")
+    private PersonRepository personRepository;
 
     @Before
     public void setUp() throws Exception {
-        MeetingServiceCommon.setUp(meetingRepository, userRepository, placeRepository);
+        MeetingServiceCommon.setUp(meetingRepository, personRepository, placeRepository);
     }
 
     @Test

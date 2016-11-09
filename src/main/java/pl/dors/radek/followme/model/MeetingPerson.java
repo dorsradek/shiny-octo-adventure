@@ -1,7 +1,7 @@
 package pl.dors.radek.followme.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import pl.dors.radek.followme.model.id.MeetingUserID;
+import pl.dors.radek.followme.model.id.MeetingPersonID;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,28 +10,28 @@ import java.time.LocalDateTime;
  * Created by rdors on 2016-10-25.
  */
 @Entity
-@Table(name = "MEETING_USER")
+@Table(name = "MEETING_PERSON")
 @AssociationOverrides({
         @AssociationOverride(name = "pk.meeting",
                 joinColumns = @JoinColumn(name = "MEETING_ID")),
-        @AssociationOverride(name = "pk.user",
-                joinColumns = @JoinColumn(name = "USER_ID"))})
-public class MeetingUser {
+        @AssociationOverride(name = "pk.person",
+                joinColumns = @JoinColumn(name = "PERSON_ID"))})
+public class MeetingPerson {
 
     @JsonIgnore
-    private MeetingUserID pk = new MeetingUserID();
+    private MeetingPersonID pk = new MeetingPersonID();
     private boolean owner;
     private double x;
     private double y;
     private LocalDateTime lastUpdate;
-    private UserStatus userStatus;
+    //private UserStatus userStatus;
 
     @EmbeddedId
-    public MeetingUserID getPk() {
+    public MeetingPersonID getPk() {
         return pk;
     }
 
-    public void setPk(MeetingUserID pk) {
+    public void setPk(MeetingPersonID pk) {
         this.pk = pk;
     }
 
@@ -71,13 +71,13 @@ public class MeetingUser {
         this.lastUpdate = lastUpdate;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
-    }
+//    public UserStatus getUserStatus() {
+//        return userStatus;
+//    }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
-    }
+//    public void setUserStatus(UserStatus userStatus) {
+//        this.userStatus = userStatus;
+//    }
 
     @JsonIgnore
     @Transient
@@ -90,12 +90,12 @@ public class MeetingUser {
     }
 
     @Transient
-    public User getUser() {
-        return getPk().getUser();
+    public Person getUser() {
+        return getPk().getPerson();
     }
 
-    public void setUser(User user) {
-        getPk().setUser(user);
+    public void setUser(Person person) {
+        getPk().setPerson(person);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class MeetingUser {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MeetingUser that = (MeetingUser) o;
+        MeetingPerson that = (MeetingPerson) o;
 
         return pk != null ? pk.equals(that.pk) : that.pk == null;
     }
@@ -115,7 +115,7 @@ public class MeetingUser {
 
     @Override
     public String toString() {
-        return "MeetingUser{" +
+        return "MeetingPerson{" +
                 "pk=" + pk +
                 ", owner=" + owner +
                 '}';

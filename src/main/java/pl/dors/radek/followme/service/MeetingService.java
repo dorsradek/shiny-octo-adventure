@@ -3,7 +3,7 @@ package pl.dors.radek.followme.service;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingPlace;
-import pl.dors.radek.followme.model.MeetingUser;
+import pl.dors.radek.followme.model.MeetingPerson;
 import pl.dors.radek.followme.repository.*;
 
 import javax.transaction.Transactional;
@@ -20,14 +20,14 @@ public class MeetingService implements IMeetingService {
 
     private MeetingRepository meetingRepository;
     private PlaceRepository placeRepository;
-    private UserRepository userRepository;
+    private PersonRepository personRepository;
     private MeetingUserRepository meetingUserRepository;
     private MeetingPlaceRepository meetingPlaceRepository;
 
-    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, UserRepository userRepository, MeetingUserRepository meetingUserRepository, MeetingPlaceRepository meetingPlaceRepository) {
+    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, PersonRepository personRepository, MeetingUserRepository meetingUserRepository, MeetingPlaceRepository meetingPlaceRepository) {
         this.meetingRepository = meetingRepository;
         this.placeRepository = placeRepository;
-        this.userRepository = userRepository;
+        this.personRepository = personRepository;
         this.meetingUserRepository = meetingUserRepository;
         this.meetingPlaceRepository = meetingPlaceRepository;
     }
@@ -50,20 +50,20 @@ public class MeetingService implements IMeetingService {
 
     @Override
     public List<Meeting> findByUserId(Optional<Long> userId) {
-        return meetingRepository.findByUserId(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")));
+        return meetingRepository.findByUserId(userId.orElseThrow(() -> new IllegalArgumentException("Person id can't be null")));
     }
 
     @Override
     public List<Meeting> findByUserIdActive(Optional<Long> userId) {
-        return meetingRepository.findByUserIdAndActiveTrue(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")));
+        return meetingRepository.findByUserIdAndActiveTrue(userId.orElseThrow(() -> new IllegalArgumentException("Person id can't be null")));
     }
 
     @Override
     public void save(Meeting meeting) {
         meeting.getMeetingPlaces().stream().forEach(meetingPlace -> meetingPlace.setMeeting(meeting));
-        meeting.getMeetingUsers().stream().forEach(meetingUser -> meetingUser.setMeeting(meeting));
+        meeting.getMeetingPersons().stream().forEach(meetingUser -> meetingUser.setMeeting(meeting));
         meeting.getMeetingPlaces().stream().map(meetingPlace -> meetingPlace.getPlace()).forEach(placeRepository::save);
-        meeting.getMeetingUsers().stream().map(meetingUser -> meetingUser.getUser()).forEach(userRepository::save);
+        meeting.getMeetingPersons().stream().map(meetingUser -> meetingUser.getUser()).forEach(personRepository::save);
 
         meeting.setLastUpdate(LocalDateTime.now());
         meeting.setActive(true);
@@ -140,23 +140,23 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void addUser(Optional<Long> meetingId, MeetingUser meetingUser) {
+    public void addUser(Optional<Long> meetingId, MeetingPerson meetingPerson) {
         Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        userRepository.save(meetingUser.getUser());
-        meetingUser.setMeeting(meeting);
-        meeting.getMeetingUsers().add(meetingUser);
+        personRepository.save(meetingPerson.getUser());
+        meetingPerson.setMeeting(meeting);
+        meeting.getMeetingPersons().add(meetingPerson);
         meetingRepository.save(meeting);
     }
 
     @Override
-    public void addUsers(Optional<Long> meetingId, List<MeetingUser> meetingUsers) {
+    public void addUsers(Optional<Long> meetingId, List<MeetingPerson> meetingPersons) {
         Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        meetingUsers.forEach(meetingUser -> {
-            userRepository.save(meetingUser.getUser());
+        meetingPersons.forEach(meetingUser -> {
+            personRepository.save(meetingUser.getUser());
             meetingUser.setMeeting(meeting);
-            meeting.getMeetingUsers().add(meetingUser);
+            meeting.getMeetingPersons().add(meetingUser);
         });
         meetingRepository.save(meeting);
     }
@@ -165,8 +165,8 @@ public class MeetingService implements IMeetingService {
     public void deleteUser(Optional<Long> meetingId, Optional<Long> userId) {
         Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        meeting.getMeetingUsers().stream()
-                .filter(meetingUser -> meetingUser.getUser().getId().equals(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null"))))
+        meeting.getMeetingPersons().stream()
+                .filter(meetingUser -> meetingUser.getUser().getId().equals(userId.orElseThrow(() -> new IllegalArgumentException("Person id can't be null"))))
                 .forEach(meetingUserRepository::delete);
     }
 
@@ -174,21 +174,21 @@ public class MeetingService implements IMeetingService {
     public void deleteUsers(Optional<Long> meetingId, List<Optional<Long>> usersIds) {
         Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        meeting.getMeetingUsers().stream()
-                .filter(meetingUser -> usersIds.stream().anyMatch(placeId -> meetingUser.getUser().getId().equals(placeId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")))))
+        meeting.getMeetingPersons().stream()
+                .filter(meetingUser -> usersIds.stream().anyMatch(placeId -> meetingUser.getUser().getId().equals(placeId.orElseThrow(() -> new IllegalArgumentException("Person id can't be null")))))
                 .forEach(meetingUserRepository::delete);
     }
 
     @Override
-    public void updateUser(Optional<Long> meetingId, Optional<Long> userId, MeetingUser meetingUser) {
-        MeetingUser meetingUserDb = meetingUserRepository.findByMeetingIdAndUserId(
+    public void updateUser(Optional<Long> meetingId, Optional<Long> userId, MeetingPerson meetingPerson) {
+        MeetingPerson meetingPersonDb = meetingUserRepository.findByMeetingIdAndUserId(
                 meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")),
-                userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null"))
-        ).orElseThrow(() -> new RuntimeException("MeetingUser not found"));
-        meetingUserDb.setX(meetingUser.getX());
-        meetingUserDb.setY(meetingUser.getY());
-        meetingUserDb.setLastUpdate(LocalDateTime.now());
-        meetingUserRepository.save(meetingUserDb);
+                userId.orElseThrow(() -> new IllegalArgumentException("Person id can't be null"))
+        ).orElseThrow(() -> new RuntimeException("MeetingPerson not found"));
+        meetingPersonDb.setX(meetingPerson.getX());
+        meetingPersonDb.setY(meetingPerson.getY());
+        meetingPersonDb.setLastUpdate(LocalDateTime.now());
+        meetingUserRepository.save(meetingPersonDb);
     }
 
     @Override

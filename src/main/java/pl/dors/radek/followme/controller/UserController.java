@@ -1,14 +1,10 @@
 package pl.dors.radek.followme.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.MeetingPlace;
-import pl.dors.radek.followme.model.User;
+import pl.dors.radek.followme.model.Person;
 import pl.dors.radek.followme.service.IMeetingService;
 import pl.dors.radek.followme.service.IUserService;
 
@@ -31,14 +27,14 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<User> findAll() {
+    public List<Person> findAll() {
         return userService.findAll();
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<User> showDetails(@PathVariable("userId") long userId) {
-        User user = userService.findOne(Optional.ofNullable(userId));
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<Person> showDetails(@PathVariable("userId") long userId) {
+        Person person = userService.findOne(Optional.ofNullable(userId));
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{userId}/meetings", method = RequestMethod.GET)

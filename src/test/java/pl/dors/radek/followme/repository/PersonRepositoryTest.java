@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.dors.radek.followme.model.User;
+import pl.dors.radek.followme.model.Person;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -21,57 +21,57 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 @Transactional
-public class UserRepositoryTest {
+public class PersonRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    private UserRepository userRepository;
+    private PersonRepository personRepository;
 
-    private List<User> users;
+    private List<Person> persons;
 
     @Before
     public void setUp() throws Exception {
-        users = Arrays.asList(
-                new User("Stefan"),
-                new User("ASD")
+        persons = Arrays.asList(
+                new Person("Stefan"),
+                new Person("ASD")
         );
-        users.forEach(entityManager::persist);
+        persons.forEach(entityManager::persist);
     }
 
     @Test
     public void findAllTest() throws Exception {
-        List<User> result = userRepository.findAll();
+        List<Person> result = personRepository.findAll();
 
         assertThat(result).hasSize(2);
-        assertThat(result).containsAll(users);
+        assertThat(result).containsAll(persons);
     }
 
     @Test
     public void findByNameTest() throws Exception {
-        List<User> result = userRepository.findByName("Stefan");
+        List<Person> result = personRepository.findByName("Stefan");
 
         assertThat(result).hasSize(1);
-        assertThat(result).containsOnly(users.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());
+        assertThat(result).containsOnly(persons.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());
     }
 
     @Test
     public void saveTest() throws Exception {
-        User user = new User("U1");
-        userRepository.save(user);
+        Person person = new Person("U1");
+        personRepository.save(person);
 
-        assertThat(user.getId()).isNotNull();
-        User result = entityManager.find(User.class, user.getId());
+        assertThat(person.getId()).isNotNull();
+        Person result = entityManager.find(Person.class, person.getId());
         assertThat(result.getName()).isEqualTo("U1");
     }
 
     @Test
     public void updateNameTest() throws Exception {
-        User user = entityManager.find(User.class, users.get(0).getId());
-        user.setName("U33");
-        userRepository.save(user);
-        user = entityManager.find(User.class, user.getId());
-        assertThat(user.getName()).isEqualTo("U33");
+        Person person = entityManager.find(Person.class, persons.get(0).getId());
+        person.setName("U33");
+        personRepository.save(person);
+        person = entityManager.find(Person.class, person.getId());
+        assertThat(person.getName()).isEqualTo("U33");
     }
 }

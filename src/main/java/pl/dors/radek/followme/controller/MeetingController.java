@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.dors.radek.followme.model.Meeting;
+import pl.dors.radek.followme.model.MeetingPerson;
 import pl.dors.radek.followme.model.MeetingPlace;
-import pl.dors.radek.followme.model.MeetingUser;
 import pl.dors.radek.followme.service.IMeetingService;
 
 import java.util.List;
@@ -92,9 +92,9 @@ public class MeetingController {
 
     @RequestMapping(value = "/{meetingId}/addUser", method = RequestMethod.POST)
     public ResponseEntity<Void> addUser(@PathVariable("meetingId") long meetingId,
-                                        @RequestBody MeetingUser meetingUser,
+                                        @RequestBody MeetingPerson meetingPerson,
                                         UriComponentsBuilder uriComponentsBuilder) {
-        meetingService.addUser((Optional.ofNullable(meetingId)), meetingUser);
+        meetingService.addUser((Optional.ofNullable(meetingId)), meetingPerson);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meetingId).toUri());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
@@ -103,9 +103,9 @@ public class MeetingController {
     @RequestMapping(value = "/{meetingId}/users/{userId}", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateUser(@PathVariable("meetingId") long meetingId,
                                            @PathVariable("userId") long userId,
-                                           @RequestBody MeetingUser meetingUser,
+                                           @RequestBody MeetingPerson meetingPerson,
                                            UriComponentsBuilder uriComponentsBuilder) {
-        meetingService.updateUser(Optional.ofNullable(meetingId), Optional.ofNullable(userId), meetingUser);
+        meetingService.updateUser(Optional.ofNullable(meetingId), Optional.ofNullable(userId), meetingPerson);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meetingId).toUri());
         return new ResponseEntity<>(headers, HttpStatus.OK);

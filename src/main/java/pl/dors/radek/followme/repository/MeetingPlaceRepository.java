@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import pl.dors.radek.followme.model.MeetingPlace;
-import pl.dors.radek.followme.model.MeetingUser;
 
 import java.util.List;
 import java.util.Optional;

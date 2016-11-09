@@ -9,17 +9,17 @@ import java.util.List;
  * Created by rdors on 2016-10-24.
  */
 @Entity
-@Table(name = "USER")
-public class User {
+@Table(name = "PERSON")
+public class Person {
 
     private Long id;
     private String name;
-    private List<MeetingUser> meetingUsers;
+    private List<MeetingPerson> meetingPersons;
 
-    public User() {
+    public Person() {
     }
 
-    public User(String name) {
+    public Person(String name) {
         this.name = name;
     }
 
@@ -44,13 +44,13 @@ public class User {
     }
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user")
-    public List<MeetingUser> getMeetingUsers() {
-        return meetingUsers;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.person")
+    public List<MeetingPerson> getMeetingPersons() {
+        return meetingPersons;
     }
 
-    public void setMeetingUsers(List<MeetingUser> meetingUsers) {
-        this.meetingUsers = meetingUsers;
+    public void setMeetingPersons(List<MeetingPerson> meetingPersons) {
+        this.meetingPersons = meetingPersons;
     }
 
     @Override
@@ -58,10 +58,10 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        Person person = (Person) o;
 
-        if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        return name != null ? name.equals(user.name) : user.name == null;
+        if (id != null ? !id.equals(person.id) : person.id != null) return false;
+        return name != null ? name.equals(person.name) : person.name == null;
 
     }
 
@@ -74,10 +74,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Person{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", meetingUsers=" + meetingUsers +
+                ", meetingPersons=" + meetingPersons +
                 '}';
     }
 }

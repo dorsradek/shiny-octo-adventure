@@ -34,8 +34,11 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('com.h2database:h2')
+	compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.mobile:spring-mobile-device")
+    compile('com.h2database:h2')
 	compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
+    compile('io.jsonwebtoken:jjwt:0.7.0')
 	runtime('org.postgresql:postgresql')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
