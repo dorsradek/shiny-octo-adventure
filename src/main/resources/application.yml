@@ -10,6 +10,10 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  social:
+    facebook:
+      app-id: 315052835531521
+      app-secret: 241537a4e158cf800047796c13e7a310
 jwt:
   header: Authorization
   secret: mySecret

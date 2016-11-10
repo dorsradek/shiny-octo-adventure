@@ -128,6 +128,14 @@ public class JwtTokenUtil implements Serializable {
         return generateToken(claims);
     }
 
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+        claims.put(CLAIM_KEY_AUDIENCE, null);
+        claims.put(CLAIM_KEY_CREATED, new Date());
+        return generateToken(claims);
+    }
+
     String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
                 .setClaims(claims)
