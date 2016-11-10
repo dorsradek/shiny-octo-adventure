@@ -1,5 +1,6 @@
-package pl.dors.radek.followme.social;
+package pl.dors.radek.followme.security.controller.social;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,17 +21,28 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.dors.radek.followme.security.JwtTokenUtil;
 import pl.dors.radek.followme.security.service.JwtAuthenticationResponse;
 
+import javax.annotation.PostConstruct;
+
 @RestController
-public class HelloController {
+public class FacebookAuthenticationRestController {
+
+    @Value("${spring.social.facebook.app-id}")
+    private String facebookAppId;
+    @Value("${spring.social.facebook.app-secret}")
+    private String facebookAppSecret;
 
     private JwtTokenUtil jwtTokenUtil;
     private UserDetailsService userDetailsService;
     private FacebookConnectionFactory facebookConnectionFactory;
 
-    public HelloController(JwtTokenUtil jwtTokenUtil, UserDetailsService userDetailsService, FacebookConnectionFactory facebookConnectionFactory) {
+    public FacebookAuthenticationRestController(JwtTokenUtil jwtTokenUtil, UserDetailsService userDetailsService) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
-        this.facebookConnectionFactory = facebookConnectionFactory;
+    }
+
+    @PostConstruct
+    public void postInit() {
+        this.facebookConnectionFactory = new FacebookConnectionFactory(facebookAppId, facebookAppSecret);
     }
 
     @RequestMapping(value = "/facebook", method = RequestMethod.POST)
@@ -49,7 +61,6 @@ public class HelloController {
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(userProfile.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-
         // Return the token
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
