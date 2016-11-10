@@ -2,6 +2,7 @@ package pl.dors.radek.followme.security.controller.social;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -46,7 +47,7 @@ public class FacebookAuthenticationRestController {
     }
 
     @RequestMapping(value = "/facebook", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationTokenFacebook(@RequestParam String tokenString) throws AuthenticationException {
+    public ResponseEntity<?> createAuthenticationTokenFacebook(@RequestParam String tokenString, Device device) throws AuthenticationException {
 
         AccessGrant accessGrant = new AccessGrant(tokenString);
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(accessGrant);
@@ -60,7 +61,7 @@ public class FacebookAuthenticationRestController {
 
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(userProfile.getUsername());
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final String token = jwtTokenUtil.generateToken(userDetails, device);
         // Return the token
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
