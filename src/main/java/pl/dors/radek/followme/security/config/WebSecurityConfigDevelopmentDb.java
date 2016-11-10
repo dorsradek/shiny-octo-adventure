@@ -16,5 +16,6 @@ public class WebSecurityConfigDevelopmentDb extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         LOGGER.info("Run DEVELOPMENT Security Configuration");
+        http.csrf().disable();
     }
 }

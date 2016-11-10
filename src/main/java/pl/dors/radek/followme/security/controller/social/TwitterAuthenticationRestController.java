@@ -12,9 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
-import org.springframework.social.facebook.api.Facebook;
-import org.springframework.social.facebook.connect.FacebookConnectionFactory;
-import org.springframework.social.oauth2.AccessGrant;
+import org.springframework.social.oauth1.OAuthToken;
+import org.springframework.social.twitter.api.Twitter;
+import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,36 +27,36 @@ import pl.dors.radek.followme.security.service.JwtAuthenticationResponse;
 import javax.annotation.PostConstruct;
 
 @RestController
-public class FacebookAuthenticationRestController extends SocialRestController {
+public class TwitterAuthenticationRestController extends SocialRestController {
 
-    @Value("${spring.social.facebook.app-id}")
-    private String facebookAppId;
-    @Value("${spring.social.facebook.app-secret}")
-    private String facebookAppSecret;
+    @Value("${spring.social.twitter.app-id}")
+    private String twitterAppId;
+    @Value("${spring.social.twitter.app-secret}")
+    private String twitterAppSecret;
 
-    private FacebookConnectionFactory facebookConnectionFactory;
+    private TwitterConnectionFactory twitterConnectionFactory;
 
-    public FacebookAuthenticationRestController(JwtTokenUtil jwtTokenUtil, UserDetailsService userDetailsService, UserRepository userRepository, AuthorityRepository authorityRepository) {
+    public TwitterAuthenticationRestController(JwtTokenUtil jwtTokenUtil, UserDetailsService userDetailsService, UserRepository userRepository, AuthorityRepository authorityRepository) {
         super(jwtTokenUtil, userDetailsService, userRepository, authorityRepository);
     }
 
     @PostConstruct
     public void postInit() {
-        this.facebookConnectionFactory = new FacebookConnectionFactory(facebookAppId, facebookAppSecret);
+        this.twitterConnectionFactory = new TwitterConnectionFactory(twitterAppId, twitterAppSecret);
     }
 
-    @RequestMapping(value = "/facebook", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationTokenFacebook(@RequestParam String token, Device device) throws AuthenticationException {
+    @RequestMapping(value = "/twitter", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationTokenFacebook(@RequestParam String token, @RequestParam String tokenSecret, Device device) throws AuthenticationException {
 
-        UserProfile userProfile = obtainSocialUser(token, null);
+        UserProfile userProfile = obtainSocialUser(token, tokenSecret);
         // Perform the security
-        final Authentication authentication = new UsernamePasswordAuthenticationToken(userProfile.getEmail(), null,
+        final Authentication authentication = new UsernamePasswordAuthenticationToken(userProfile.getUsername(), null,
                 AuthorityUtils.createAuthorityList("ROLE_USER"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Reload password post-security so we can generate token
         createUser(userProfile);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userProfile.getEmail());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userProfile.getUsername());
 
         final String jwtToken = jwtTokenUtil.generateToken(userDetails, device);
         // Return the token
@@ -65,8 +65,8 @@ public class FacebookAuthenticationRestController extends SocialRestController {
 
     @Override
     protected UserProfile obtainSocialUser(String token, String tokenSecret) {
-        AccessGrant accessGrant = new AccessGrant(token);
-        Connection<Facebook> connection = facebookConnectionFactory.createConnection(accessGrant);
+        OAuthToken oAuthToken = new OAuthToken(token, tokenSecret);
+        Connection<Twitter> connection = twitterConnectionFactory.createConnection(oAuthToken);
         return connection.fetchUserProfile();
     }
 

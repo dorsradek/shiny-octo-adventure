@@ -14,6 +14,9 @@ spring:
     facebook:
       app-id: 315052835531521
       app-secret: 241537a4e158cf800047796c13e7a310
+    twitter:
+      app-id: gw3l0TdvUktoLJ9g6AuDauJn0
+      app-secret: Bo9RPCfMHkR53Tesm7rIpJhXUatvTtrRJiq7VN3CFKnBlUs3lr
 jwt:
   header: Authorization
   secret: mySecret
@@ -42,9 +45,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
 server:
   port: 8081
+logging:
+  level: debug
 ---
 spring:
   profiles: production
