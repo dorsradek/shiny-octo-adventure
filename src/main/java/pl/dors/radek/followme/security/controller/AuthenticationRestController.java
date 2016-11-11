@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.security.JwtAuthenticationRequest;
 import pl.dors.radek.followme.security.JwtTokenUtil;
 import pl.dors.radek.followme.security.JwtUser;
@@ -54,18 +55,22 @@ public class AuthenticationRestController {
         final String token = jwtTokenUtil.generateToken(userDetails, device);
 
         // Return the token
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+        User user = new User();
+        user.setUsername(userDetails.getUsername());
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token, user));
     }
 
     @RequestMapping(value = "${jwt.route.authentication.refresh}", method = RequestMethod.GET)
     public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+        JwtUser jwtUser = (JwtUser) userDetailsService.loadUserByUsername(username);
 
-        if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
+        if (jwtTokenUtil.canTokenBeRefreshed(token, jwtUser.getLastPasswordResetDate())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
+            User user = new User();
+            user.setUsername(jwtUser.getUsername());
+            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken, user));
         } else {
             return ResponseEntity.badRequest().body(null);
         }

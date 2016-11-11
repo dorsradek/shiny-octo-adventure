@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.security.JwtTokenUtil;
 import pl.dors.radek.followme.security.repository.AuthorityRepository;
 import pl.dors.radek.followme.security.repository.UserRepository;
@@ -57,10 +58,12 @@ public class FacebookAuthenticationRestController extends SocialRestController {
         // Reload password post-security so we can generate token
         createUser(userProfile);
         UserDetails userDetails = userDetailsService.loadUserByUsername(userProfile.getEmail());
+        User user = new User();
+        user.setUsername(userProfile.getEmail());
 
         final String jwtToken = jwtTokenUtil.generateToken(userDetails, device);
         // Return the token
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwtToken));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwtToken, user));
     }
 
     @Override
