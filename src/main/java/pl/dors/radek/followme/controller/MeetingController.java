@@ -28,8 +28,8 @@ public class MeetingController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Meeting> findAll() {
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal()
-        return meetingService.findAll((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return meetingService.findAll(principal);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
