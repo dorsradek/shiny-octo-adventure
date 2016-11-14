@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingPerson;
+import pl.dors.radek.followme.security.JwtUser;
 import pl.dors.radek.followme.service.IMeetingService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +30,14 @@ public class MeetingController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Meeting> findAll() {
-        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return meetingService.findAll(principal);
+        String username = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof JwtUser) {
+            username = ((JwtUser) principal).getUsername();
+            return meetingService.findAll(username);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
