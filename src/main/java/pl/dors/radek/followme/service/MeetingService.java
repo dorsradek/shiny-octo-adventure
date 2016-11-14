@@ -1,10 +1,13 @@
 package pl.dors.radek.followme.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.MeetingPlace;
 import pl.dors.radek.followme.model.MeetingPerson;
-import pl.dors.radek.followme.repository.*;
+import pl.dors.radek.followme.repository.MeetingRepository;
+import pl.dors.radek.followme.repository.MeetingUserRepository;
+import pl.dors.radek.followme.repository.PersonRepository;
+import pl.dors.radek.followme.repository.PlaceRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -18,22 +21,24 @@ import java.util.Optional;
 @Transactional
 public class MeetingService implements IMeetingService {
 
+    private static Logger logger = Logger.getLogger(MeetingService.class);
+
     private MeetingRepository meetingRepository;
     private PlaceRepository placeRepository;
     private PersonRepository personRepository;
     private MeetingUserRepository meetingUserRepository;
-    private MeetingPlaceRepository meetingPlaceRepository;
 
-    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, PersonRepository personRepository, MeetingUserRepository meetingUserRepository, MeetingPlaceRepository meetingPlaceRepository) {
+    public MeetingService(MeetingRepository meetingRepository, PlaceRepository placeRepository, PersonRepository personRepository, MeetingUserRepository meetingUserRepository) {
         this.meetingRepository = meetingRepository;
         this.placeRepository = placeRepository;
         this.personRepository = personRepository;
         this.meetingUserRepository = meetingUserRepository;
-        this.meetingPlaceRepository = meetingPlaceRepository;
     }
 
     @Override
-    public List<Meeting> findAll() {
+    public List<Meeting> findAll(String username) {
+        //TODO: find user by username
+        logger.info("findAll username: " + username);
         return meetingRepository.findAll();
     }
 
@@ -60,9 +65,9 @@ public class MeetingService implements IMeetingService {
 
     @Override
     public void save(Meeting meeting) {
-        meeting.getMeetingPlaces().stream().forEach(meetingPlace -> meetingPlace.setMeeting(meeting));
+        meeting.getPlace().setMeeting(meeting);
         meeting.getMeetingPersons().stream().forEach(meetingUser -> meetingUser.setMeeting(meeting));
-        meeting.getMeetingPlaces().stream().map(meetingPlace -> meetingPlace.getPlace()).forEach(placeRepository::save);
+        placeRepository.save(meeting.getPlace());
         meeting.getMeetingPersons().stream().map(meetingUser -> meetingUser.getUser()).forEach(personRepository::save);
 
         meeting.setLastUpdate(LocalDateTime.now());
@@ -87,56 +92,6 @@ public class MeetingService implements IMeetingService {
         meeting.setLastUpdate(LocalDateTime.now());
         meeting.setActive(false);
         meetingRepository.save(meeting);
-    }
-
-    @Override
-    public void addPlace(Optional<Long> meetingId, MeetingPlace meetingPlace) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
-                .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        placeRepository.save(meetingPlace.getPlace());
-        meetingPlace.setMeeting(meeting);
-        meeting.getMeetingPlaces().add(meetingPlace);
-        meetingRepository.save(meeting);
-    }
-
-    @Override
-    public void addPlaces(Optional<Long> meetingId, List<MeetingPlace> meetingPlaces) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
-                .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        meetingPlaces.forEach(meetingPlace -> {
-            placeRepository.save(meetingPlace.getPlace());
-            meetingPlace.setMeeting(meeting);
-            meeting.getMeetingPlaces().add(meetingPlace);
-        });
-        meetingRepository.save(meeting);
-    }
-
-    @Override
-    public void updatePlace(Optional<Long> meetingId, Optional<Long> placeId, MeetingPlace meetingPlace) {
-        MeetingPlace meetingPlaceDb = meetingPlaceRepository.findByMeetingIdAndPlaceId(
-                meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")),
-                placeId.orElseThrow(() -> new IllegalArgumentException("Place id can't be null"))
-        ).orElseThrow(() -> new RuntimeException("MeetingPlace not found"));
-        meetingPlaceDb.setOwner(meetingPlace.isOwner());
-        meetingPlaceRepository.save(meetingPlaceDb);
-    }
-
-    @Override
-    public void deletePlace(Optional<Long> meetingId, Optional<Long> placeId) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
-                .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        meeting.getMeetingPlaces().stream()
-                .filter(meetingPlace -> meetingPlace.getPlace().getId().equals(placeId.orElseThrow(() -> new IllegalArgumentException("Place id can't be null"))))
-                .forEach(meetingPlaceRepository::delete);
-    }
-
-    @Override
-    public void deletePlaces(Optional<Long> meetingId, List<Optional<Long>> placesIds) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
-                .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        meeting.getMeetingPlaces().stream()
-                .filter(meetingPlace -> placesIds.stream().anyMatch(placeId -> meetingPlace.getPlace().getId().equals(placeId.orElseThrow(() -> new IllegalArgumentException("Place id can't be null")))))
-                .forEach(meetingPlaceRepository::delete);
     }
 
     @Override
@@ -189,29 +144,6 @@ public class MeetingService implements IMeetingService {
         meetingPersonDb.setY(meetingPerson.getY());
         meetingPersonDb.setLastUpdate(LocalDateTime.now());
         meetingUserRepository.save(meetingPersonDb);
-    }
-
-    @Override
-    public void updatePlaces(Meeting meeting) {
-        Meeting meetingDb = meetingRepository.findById(Optional.ofNullable(meeting.getId()).orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
-                .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        //new places
-        meeting.getMeetingPlaces().stream()
-                .filter(meetingPlace -> meetingDb.getMeetingPlaces().stream()
-                        .noneMatch(meetingPlace1 -> meetingPlace.getPlace().getId().equals(meetingPlace1.getPlace().getId())))
-                .forEach(meetingPlace -> {
-                    placeRepository.save(meetingPlace.getPlace());
-                    meetingDb.getMeetingPlaces().add(meetingPlace);
-                });
-        //remove places
-        meetingDb.getMeetingPlaces().stream()
-                .filter(meetingPlace -> meeting.getMeetingPlaces().stream()
-                        .noneMatch(meetingPlace1 -> meetingPlace.getPlace().getId().equals(meetingPlace1.getPlace().getId())))
-                .forEach(meetingPlace -> {
-                    meetingPlaceRepository.delete(meetingPlace);
-                    meetingDb.getMeetingPlaces().remove(meetingPlace);
-                });
-        meetingRepository.save(meeting);
     }
 
 }

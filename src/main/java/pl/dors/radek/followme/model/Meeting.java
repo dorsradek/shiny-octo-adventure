@@ -16,7 +16,7 @@ public class Meeting {
     private String name;
     private LocalDateTime lastUpdate;
     private boolean active;
-    private List<MeetingPlace> meetingPlaces = new ArrayList<>();
+    private Place place;
     private List<MeetingPerson> meetingPersons = new ArrayList<>();
 
     public Meeting() {
@@ -26,9 +26,9 @@ public class Meeting {
         this.name = name;
     }
 
-    public Meeting(String name, List<MeetingPlace> meetingPlaces, List<MeetingPerson> meetingPersons) {
+    public Meeting(String name, Place place, List<MeetingPerson> meetingPersons) {
         this.name = name;
-        this.meetingPlaces = meetingPlaces;
+        this.place = place;
         this.meetingPersons = meetingPersons;
     }
 
@@ -70,13 +70,13 @@ public class Meeting {
         this.active = active;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<MeetingPlace> getMeetingPlaces() {
-        return meetingPlaces;
+    @OneToOne(mappedBy = "meeting", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public Place getPlace() {
+        return place;
     }
 
-    public void setMeetingPlaces(List<MeetingPlace> meetingPlaces) {
-        this.meetingPlaces = meetingPlaces;
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL)
@@ -112,7 +112,9 @@ public class Meeting {
         return "Meeting{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", meetingPlaces=" + meetingPlaces +
+                ", lastUpdate=" + lastUpdate +
+                ", active=" + active +
+                ", place=" + place +
                 ", meetingPersons=" + meetingPersons +
                 '}';
     }

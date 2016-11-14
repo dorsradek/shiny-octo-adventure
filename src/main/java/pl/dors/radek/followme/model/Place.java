@@ -3,7 +3,6 @@ package pl.dors.radek.followme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -16,8 +15,7 @@ public class Place {
     private String name;
     private double x;
     private double y;
-    @JsonIgnore
-    private List<MeetingPlace> meetingPlaces;
+    private Meeting meeting;
 
     public Place() {
     }
@@ -67,13 +65,14 @@ public class Place {
     }
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.place", cascade = CascadeType.ALL)
-    public List<MeetingPlace> getMeetingPlaces() {
-        return meetingPlaces;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEETING_ID")
+    public Meeting getMeeting() {
+        return meeting;
     }
 
-    public void setMeetingPlaces(List<MeetingPlace> meetingPlaces) {
-        this.meetingPlaces = meetingPlaces;
+    public void setMeeting(Meeting meeting) {
+        this.meeting = meeting;
     }
 
     @Override
@@ -110,7 +109,7 @@ public class Place {
                 ", name='" + name + '\'' +
                 ", x=" + x +
                 ", y=" + y +
-                ", meetingPlaces=" + meetingPlaces +
+                ", meeting=" + meeting +
                 '}';
     }
 

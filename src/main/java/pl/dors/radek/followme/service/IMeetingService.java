@@ -2,7 +2,6 @@ package pl.dors.radek.followme.service;
 
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingPerson;
-import pl.dors.radek.followme.model.MeetingPlace;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,7 @@ import java.util.Optional;
  */
 public interface IMeetingService {
 
-    List<Meeting> findAll();
+    List<Meeting> findAll(String username);
 
     List<Meeting> findAllActive();
 
@@ -28,16 +27,6 @@ public interface IMeetingService {
 
     void delete(Optional<Long> meetingId);
 
-    void addPlace(Optional<Long> meetingId, MeetingPlace meetingPlace);
-
-    void addPlaces(Optional<Long> meetingId, List<MeetingPlace> meetingPlaces);
-
-    void updatePlace(Optional<Long> meetingId, Optional<Long> placeId, MeetingPlace meetingPlace);
-
-    void deletePlace(Optional<Long> meetingId, Optional<Long> placeId);
-
-    void deletePlaces(Optional<Long> meetingId, List<Optional<Long>> placesIds);
-
     void addUser(Optional<Long> meetingId, MeetingPerson meetingPerson);
 
     void addUsers(Optional<Long> meetingId, List<MeetingPerson> meetingPersons);
@@ -47,8 +36,5 @@ public interface IMeetingService {
     void deleteUsers(Optional<Long> meetingId, List<Optional<Long>> usersIds);
 
     void updateUser(Optional<Long> meetingId, Optional<Long> userId, MeetingPerson meetingPerson);
-
-    @Deprecated
-    void updatePlaces(Meeting meeting);
 
 }

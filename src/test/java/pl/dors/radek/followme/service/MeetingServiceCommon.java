@@ -1,10 +1,14 @@
 package pl.dors.radek.followme.service;
 
 import org.mockito.Mockito;
-import pl.dors.radek.followme.model.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import pl.dors.radek.followme.model.Meeting;
+import pl.dors.radek.followme.model.MeetingPerson;
+import pl.dors.radek.followme.model.Person;
+import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.repository.MeetingRepository;
-import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.PersonRepository;
+import pl.dors.radek.followme.repository.PlaceRepository;
 
 import java.util.Arrays;
 
@@ -53,27 +57,23 @@ public class MeetingServiceCommon {
     }
 
     public static void findAll(IMeetingService meetingService) throws Exception {
-        assertThat(meetingService.findAll()).hasSize(1);
-        assertThat(meetingService.findAll().get(0).getName()).isEqualTo("M1");
+        assertThat(meetingService.findAll((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())).hasSize(1);
+        assertThat(meetingService.findAll((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).get(0).getName()).isEqualTo("M1");
     }
 
     public static void save(IMeetingService meetingService) throws Exception {
         Meeting meeting = new Meeting("M1");
         Person person = new Person("U1");
         Place place = new Place("P1", 1, 2);
-        MeetingPlace meetingPlace = new MeetingPlace();
-        meetingPlace.setPlace(place);
         MeetingPerson meetingPerson = new MeetingPerson();
         meetingPerson.setUser(person);
-        meeting.getMeetingPlaces().add(meetingPlace);
+        meeting.setPlace(place);
         meeting.getMeetingPersons().add(meetingPerson);
         meetingService.save(meeting);
         assertThat(meeting.getMeetingPersons()).hasSize(1);
-        assertThat(meeting.getMeetingPlaces()).hasSize(1);
         assertThat(meeting.getMeetingPersons().get(0).getUser().getName()).isEqualTo("U1");
-        assertThat(meeting.getMeetingPlaces().get(0).getPlace().getName()).isEqualTo("P1");
         assertThat(meeting.getMeetingPersons().get(0).getUser().getId()).isNotNull();
-        assertThat(meeting.getMeetingPlaces().get(0).getPlace().getId()).isNotNull();
+        assertThat(meeting.getPlace().getId()).isNotNull();
     }
 
 }
