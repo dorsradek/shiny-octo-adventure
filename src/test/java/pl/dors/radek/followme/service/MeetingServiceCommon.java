@@ -1,7 +1,6 @@
 package pl.dors.radek.followme.service;
 
 import org.mockito.Mockito;
-import org.springframework.security.core.context.SecurityContextHolder;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingPerson;
 import pl.dors.radek.followme.model.Person;
@@ -57,8 +56,8 @@ public class MeetingServiceCommon {
     }
 
     public static void findAll(IMeetingService meetingService) throws Exception {
-        assertThat(meetingService.findAll((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())).hasSize(1);
-        assertThat(meetingService.findAll((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).get(0).getName()).isEqualTo("M1");
+        assertThat(meetingService.findAll("U1")).hasSize(1);
+        assertThat(meetingService.findAll("U1").get(0).getName()).isEqualTo("M1");
     }
 
     public static void save(IMeetingService meetingService) throws Exception {
