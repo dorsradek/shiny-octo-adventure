@@ -38,9 +38,7 @@ public class MeetingService implements IMeetingService {
 
     @Override
     public List<Meeting> findAll(String username) {
-        //TODO: find user by username
-        logger.info("findAll username: " + username);
-        return meetingRepository.findAll();
+        return meetingRepository.findByUsername(username);
     }
 
     @Override
