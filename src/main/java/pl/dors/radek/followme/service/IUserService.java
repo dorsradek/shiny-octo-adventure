@@ -1,6 +1,6 @@
 package pl.dors.radek.followme.service;
 
-import pl.dors.radek.followme.model.Person;
+import pl.dors.radek.followme.model.security.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +10,9 @@ import java.util.Optional;
  */
 public interface IUserService {
 
-    List<Person> findAll();
+    List<User> findAll();
 
-    List<Person> findByName(String name);
+    User findByUsername(String name);
 
-    Person findOne(Optional<Long> userId);
+    User findOne(Optional<Long> userId);
 }

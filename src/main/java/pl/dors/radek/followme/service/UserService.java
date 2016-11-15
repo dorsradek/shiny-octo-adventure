@@ -1,8 +1,8 @@
 package pl.dors.radek.followme.service;
 
 import org.springframework.stereotype.Service;
-import pl.dors.radek.followme.model.Person;
-import pl.dors.radek.followme.repository.PersonRepository;
+import pl.dors.radek.followme.model.security.User;
+import pl.dors.radek.followme.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -15,26 +15,27 @@ import java.util.Optional;
 @Transactional
 public class UserService implements IUserService {
 
-    private PersonRepository personRepository;
+    private UserRepository userRepository;
 
-    public UserService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public List<Person> findAll() {
-        return personRepository.findAll();
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     @Override
-    public List<Person> findByName(String name) {
-        return personRepository.findByName(name);
+    public User findByUsername(String name) {
+        return userRepository.findByUsername(name)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
-    public Person findOne(Optional<Long> userId) {
-        return personRepository.findById(userId.orElseThrow(() -> new IllegalArgumentException("Person id can't be null")))
-                .orElseThrow(() -> new RuntimeException("Person not found"));
+    public User findOne(Optional<Long> userId) {
+        return userRepository.findById(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")))
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 }

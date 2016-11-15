@@ -8,20 +8,14 @@ import java.util.List;
 @Table(name = "AUTHORITY")
 public class Authority {
 
+    private Long id;
+    private AuthorityName name;
+    private List<User> users;
+
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "authority_seq")
     @SequenceGenerator(name = "authority_seq", sequenceName = "authority_seq", allocationSize = 1)
-    private Long id;
-
-    @Column(name = "NAME", length = 50)
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private AuthorityName name;
-
-    @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
-    private List<User> users;
-
     public Long getId() {
         return id;
     }
@@ -30,6 +24,9 @@ public class Authority {
         this.id = id;
     }
 
+    @Column(name = "NAME", length = 50)
+    @NotNull
+    @Enumerated(EnumType.STRING)
     public AuthorityName getName() {
         return name;
     }
@@ -38,6 +35,7 @@ public class Authority {
         this.name = name;
     }
 
+    @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     public List<User> getUsers() {
         return users;
     }

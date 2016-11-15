@@ -1,8 +1,9 @@
-package pl.dors.radek.followme.security.repository;
+package pl.dors.radek.followme.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import pl.dors.radek.followme.model.security.User;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -11,5 +12,9 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
+
+    Optional<User> findById(Long id);
+
+    List<User> findAll();
 
 }

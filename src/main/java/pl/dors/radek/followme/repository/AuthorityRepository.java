@@ -1,4 +1,4 @@
-package pl.dors.radek.followme.security.repository;
+package pl.dors.radek.followme.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

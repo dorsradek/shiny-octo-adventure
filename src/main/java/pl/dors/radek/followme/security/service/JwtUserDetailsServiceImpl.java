@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.security.JwtUserFactory;
-import pl.dors.radek.followme.security.repository.UserRepository;
+import pl.dors.radek.followme.repository.UserRepository;
 
 import java.util.Optional;
 

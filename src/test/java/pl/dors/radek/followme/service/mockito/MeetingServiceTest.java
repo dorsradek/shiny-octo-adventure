@@ -7,8 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.repository.MeetingRepository;
-import pl.dors.radek.followme.repository.PersonRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
+import pl.dors.radek.followme.repository.UserRepository;
 import pl.dors.radek.followme.service.MeetingService;
 import pl.dors.radek.followme.service.MeetingServiceCommon;
 
@@ -26,11 +26,11 @@ public class MeetingServiceTest {
     @Mock
     private PlaceRepository placeRepository;
     @Mock
-    private PersonRepository personRepository;
+    private UserRepository userRepository;
 
     @Before
     public void setUp() throws Exception {
-        MeetingServiceCommon.setUp(meetingRepository, personRepository, placeRepository);
+        MeetingServiceCommon.setUp(meetingRepository, userRepository, placeRepository);
     }
 
     @Test

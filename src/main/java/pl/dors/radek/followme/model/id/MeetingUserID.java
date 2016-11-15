@@ -1,16 +1,16 @@
 package pl.dors.radek.followme.model.id;
 
 import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.Person;
+import pl.dors.radek.followme.model.security.User;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class MeetingPersonID implements java.io.Serializable {
+public class MeetingUserID implements java.io.Serializable {
 
     private Meeting meeting;
-    private Person person;
+    private User user;
 
     @ManyToOne
     public Meeting getMeeting() {
@@ -22,12 +22,12 @@ public class MeetingPersonID implements java.io.Serializable {
     }
 
     @ManyToOne
-    public Person getPerson() {
-        return person;
+    public User getUser() {
+        return user;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

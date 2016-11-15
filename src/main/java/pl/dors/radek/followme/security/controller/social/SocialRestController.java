@@ -6,8 +6,8 @@ import pl.dors.radek.followme.model.security.Authority;
 import pl.dors.radek.followme.model.security.AuthorityName;
 import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.security.JwtTokenUtil;
-import pl.dors.radek.followme.security.repository.AuthorityRepository;
-import pl.dors.radek.followme.security.repository.UserRepository;
+import pl.dors.radek.followme.repository.AuthorityRepository;
+import pl.dors.radek.followme.repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.Date;

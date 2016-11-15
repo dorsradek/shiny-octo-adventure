@@ -1,70 +1,33 @@
 package pl.dors.radek.followme.model.security;
 
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import pl.dors.radek.followme.model.MeetingUser;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "USERS")
 public class User {
 
+    private Long id;
+    private String username;
+    private String password;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private boolean enabled;
+    private Date lastPasswordResetDate;
+    private List<Authority> authorities;
+    private List<MeetingUser> meetingUsers;
+
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     @SequenceGenerator(name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
-    private Long id;
-
-    @Column(name = "USERNAME", length = 50, unique = true)
-    @Size(min = 4, max = 50)
-    private String username;
-
-    @Column(name = "PASSWORD", length = 100)
-    @Size(min = 4, max = 100)
-    private String password;
-
-    @Column(name = "FIRSTNAME", length = 50)
-    @Size(min = 4, max = 50)
-    private String firstname;
-
-    @Column(name = "LASTNAME", length = 50)
-    @Size(min = 4, max = 50)
-    private String lastname;
-
-    @Column(name = "EMAIL", length = 50)
-    @Size(min = 4, max = 50)
-    private String email;
-
-    @Column(name = "ENABLED")
-    @NotNull
-    private Boolean enabled;
-
-    @Column(name = "LASTPASSWORDRESETDATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    @NotNull
-    private Date lastPasswordResetDate;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "USER_AUTHORITY",
-            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
-            inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
-    private List<Authority> authorities;
-
     public Long getId() {
         return id;
     }
@@ -73,6 +36,9 @@ public class User {
         this.id = id;
     }
 
+    @Column(name = "USERNAME", length = 50, unique = true)
+    @NotNull
+    @Size(min = 4, max = 50)
     public String getUsername() {
         return username;
     }
@@ -81,6 +47,8 @@ public class User {
         this.username = username;
     }
 
+    @Column(name = "PASSWORD", length = 100)
+    @Size(min = 4, max = 100)
     public String getPassword() {
         return password;
     }
@@ -89,6 +57,8 @@ public class User {
         this.password = password;
     }
 
+    @Column(name = "FIRSTNAME", length = 50)
+    @Size(min = 4, max = 50)
     public String getFirstname() {
         return firstname;
     }
@@ -97,6 +67,8 @@ public class User {
         this.firstname = firstname;
     }
 
+    @Column(name = "LASTNAME", length = 50)
+    @Size(min = 4, max = 50)
     public String getLastname() {
         return lastname;
     }
@@ -105,6 +77,8 @@ public class User {
         this.lastname = lastname;
     }
 
+    @Column(name = "EMAIL", length = 50)
+    @Size(min = 4, max = 50)
     public String getEmail() {
         return email;
     }
@@ -113,14 +87,32 @@ public class User {
         this.email = email;
     }
 
-    public Boolean getEnabled() {
+    @Column(name = "ENABLED")
+    @NotNull
+    public boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+    @Column(name = "LASTPASSWORDRESETDATE")
+    @Temporal(TemporalType.TIMESTAMP)
+//    @NotNull
+    public Date getLastPasswordResetDate() {
+        return lastPasswordResetDate;
+    }
+
+    public void setLastPasswordResetDate(Date lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "USER_AUTHORITY",
+            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
     public List<Authority> getAuthorities() {
         return authorities;
     }
@@ -129,11 +121,13 @@ public class User {
         this.authorities = authorities;
     }
 
-    public Date getLastPasswordResetDate() {
-        return lastPasswordResetDate;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user")
+    public List<MeetingUser> getMeetingUsers() {
+        return meetingUsers;
     }
 
-    public void setLastPasswordResetDate(Date lastPasswordResetDate) {
-        this.lastPasswordResetDate = lastPasswordResetDate;
+    public void setMeetingUsers(List<MeetingUser> meetingUsers) {
+        this.meetingUsers = meetingUsers;
     }
 }

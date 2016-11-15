@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.MeetingPerson;
+import pl.dors.radek.followme.model.MeetingUser;
 import pl.dors.radek.followme.security.JwtUser;
 import pl.dors.radek.followme.service.IMeetingService;
 
@@ -73,7 +73,7 @@ public class MeetingController {
 
     @RequestMapping(value = "/{meetingId}/addUser", method = RequestMethod.POST)
     public ResponseEntity<Void> addUser(@PathVariable("meetingId") long meetingId,
-                                        @RequestBody MeetingPerson meetingPerson,
+                                        @RequestBody MeetingUser meetingPerson,
                                         UriComponentsBuilder uriComponentsBuilder) {
         meetingService.addUser((Optional.ofNullable(meetingId)), meetingPerson);
         HttpHeaders headers = new HttpHeaders();
@@ -84,7 +84,7 @@ public class MeetingController {
     @RequestMapping(value = "/{meetingId}/users/{userId}", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateUser(@PathVariable("meetingId") long meetingId,
                                            @PathVariable("userId") long userId,
-                                           @RequestBody MeetingPerson meetingPerson,
+                                           @RequestBody MeetingUser meetingPerson,
                                            UriComponentsBuilder uriComponentsBuilder) {
         meetingService.updateUser(Optional.ofNullable(meetingId), Optional.ofNullable(userId), meetingPerson);
         HttpHeaders headers = new HttpHeaders();

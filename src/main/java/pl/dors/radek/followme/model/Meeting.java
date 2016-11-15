@@ -17,7 +17,7 @@ public class Meeting {
     private LocalDateTime lastUpdate;
     private boolean active;
     private Place place;
-    private List<MeetingPerson> meetingPersons = new ArrayList<>();
+    private List<MeetingUser> meetingUsers = new ArrayList<>();
 
     public Meeting() {
     }
@@ -26,10 +26,10 @@ public class Meeting {
         this.name = name;
     }
 
-    public Meeting(String name, Place place, List<MeetingPerson> meetingPersons) {
+    public Meeting(String name, Place place, List<MeetingUser> meetingUsers) {
         this.name = name;
         this.place = place;
-        this.meetingPersons = meetingPersons;
+        this.meetingUsers = meetingUsers;
     }
 
     @Id
@@ -80,12 +80,12 @@ public class Meeting {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.meeting", cascade = CascadeType.ALL)
-    public List<MeetingPerson> getMeetingPersons() {
-        return meetingPersons;
+    public List<MeetingUser> getMeetingUsers() {
+        return meetingUsers;
     }
 
-    public void setMeetingPersons(List<MeetingPerson> meetingPersons) {
-        this.meetingPersons = meetingPersons;
+    public void setMeetingUsers(List<MeetingUser> meetingUsers) {
+        this.meetingUsers = meetingUsers;
     }
 
     @Override
@@ -115,7 +115,7 @@ public class Meeting {
                 ", lastUpdate=" + lastUpdate +
                 ", active=" + active +
                 ", place=" + place +
-                ", meetingPersons=" + meetingPersons +
+                ", meetingUsers=" + meetingUsers +
                 '}';
     }
 }
