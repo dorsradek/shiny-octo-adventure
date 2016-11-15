@@ -22,8 +22,11 @@ public class MeetingServiceCommon {
     private static long id;
 
     public static void setUp(MeetingRepository meetingRepository, UserRepository userRepository, PlaceRepository placeRepository) throws Exception {
+        Meeting m1 = new Meeting("M1");
+        m1.setId(44L);
+
         Mockito.when(meetingRepository.findAll())
-                .thenReturn(Arrays.asList(new Meeting("M1")));
+                .thenReturn(Arrays.asList(m1));
         Mockito.when(placeRepository.save(any(Place.class)))
                 .then(i -> {
                     Place place = i.getArgumentAt(0, Place.class);
@@ -40,6 +43,9 @@ public class MeetingServiceCommon {
                     }
                     return i;
                 });
+
+        Mockito.when(meetingRepository.findByUsername(anyString()))
+                .then(i -> Arrays.asList(m1));
         Mockito.when(userRepository.findById(anyLong()))
                 .then(i -> {
                     Long userId = i.getArgumentAt(0, Long.class);
@@ -56,8 +62,6 @@ public class MeetingServiceCommon {
                     user.setUsername(username);
                     return Optional.of(user);
                 });
-        Meeting m1 = new Meeting("M1");
-        m1.setId(44L);
         Mockito.when(meetingRepository.findOne(anyLong()))
                 .thenReturn(m1);
     }
@@ -69,12 +73,6 @@ public class MeetingServiceCommon {
 
     public static void save(IMeetingService meetingService) throws Exception {
         Meeting meeting = new Meeting("M1");
-//        User user = new User();
-//        user.setId(111L);
-//        user.setUsername("U111");
-//        MeetingUser meetingUser = new MeetingUser();
-//        meetingUser.setUser(user);
-//        meeting.getMeetingUsers().add(meetingUser);
         Place place = new Place("P1", 1, 2);
         meeting.setPlace(place);
         meetingService.save(meeting, "U111");
