@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import pl.dors.radek.followme.security.config.WebSecurityConfigProduction;
 
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
@@ -19,7 +18,7 @@ public class ExceptionHandlerAdvice {
     public ResponseEntity handleException(Exception e) {
         ErrorResponse error = new ErrorResponse();
         error.setErrorCode(HTTP_STATUS.value());
-        LOGGER.debug(e.getMessage());
+        LOGGER.error(e.getMessage());
         error.setMessage("Error");
         return new ResponseEntity<>(error, HTTP_STATUS);
     }
