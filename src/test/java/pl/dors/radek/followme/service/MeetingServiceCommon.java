@@ -2,7 +2,6 @@ package pl.dors.radek.followme.service;
 
 import org.mockito.Mockito;
 import pl.dors.radek.followme.model.Meeting;
-import pl.dors.radek.followme.model.MeetingUser;
 import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.repository.MeetingRepository;
@@ -13,8 +12,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.*;
 
 /**
  * Created by rdors on 2016-10-26.
@@ -50,6 +48,14 @@ public class MeetingServiceCommon {
                     user.setUsername("U111");
                     return Optional.of(user);
                 });
+        Mockito.when(userRepository.findByUsername(anyString()))
+                .then(i -> {
+                    String username = i.getArgumentAt(0, String.class);
+                    User user = new User();
+                    user.setId(111L);
+                    user.setUsername(username);
+                    return Optional.of(user);
+                });
         Meeting m1 = new Meeting("M1");
         m1.setId(44L);
         Mockito.when(meetingRepository.findOne(anyLong()))
@@ -63,15 +69,15 @@ public class MeetingServiceCommon {
 
     public static void save(IMeetingService meetingService) throws Exception {
         Meeting meeting = new Meeting("M1");
-        User user = new User();
-        user.setId(111L);
-        user.setUsername("U111");
+//        User user = new User();
+//        user.setId(111L);
+//        user.setUsername("U111");
+//        MeetingUser meetingUser = new MeetingUser();
+//        meetingUser.setUser(user);
+//        meeting.getMeetingUsers().add(meetingUser);
         Place place = new Place("P1", 1, 2);
-        MeetingUser meetingUser = new MeetingUser();
-        meetingUser.setUser(user);
         meeting.setPlace(place);
-        meeting.getMeetingUsers().add(meetingUser);
-        meetingService.save(meeting);
+        meetingService.save(meeting, "U111");
         assertThat(meeting.getMeetingUsers()).hasSize(1);
         assertThat(meeting.getMeetingUsers().get(0).getUser().getUsername()).isEqualTo("U111");
         assertThat(meeting.getMeetingUsers().get(0).getUser().getId()).isNotNull();

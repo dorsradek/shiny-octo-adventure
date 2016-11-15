@@ -37,7 +37,7 @@ public class Place {
         this.id = id;
     }
 
-    @Column(name = "NAME", nullable = false, length = 20)
+    @Column(name = "NAME", length = 60)
     public String getName() {
         return name;
     }

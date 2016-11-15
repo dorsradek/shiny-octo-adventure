@@ -30,10 +30,9 @@ public class MeetingController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Meeting> findAll() {
-        String username = null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof JwtUser) {
-            username = ((JwtUser) principal).getUsername();
+            String username = ((JwtUser) principal).getUsername();
             return meetingService.findAll(username);
         } else {
             return new ArrayList<>();
@@ -43,10 +42,16 @@ public class MeetingController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<Void> create(@RequestBody Meeting meeting,
                                        UriComponentsBuilder uriComponentsBuilder) {
-        meetingService.save(meeting);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meeting.getId()).toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof JwtUser) {
+            String username = ((JwtUser) principal).getUsername();
+            meetingService.save(meeting, username);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meeting.getId()).toUri());
+            return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        } else {
+            throw new RuntimeException("Authentication error");
+        }
     }
 
     @RequestMapping(value = "/{meetingId}", method = RequestMethod.PUT)

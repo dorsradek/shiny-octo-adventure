@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingUser;
+import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.repository.MeetingRepository;
 import pl.dors.radek.followme.repository.MeetingUserRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
@@ -64,7 +65,14 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void save(Meeting meeting) {
+    public void save(Meeting meeting, String ownerUsername) {
+        User user = userRepository.findByUsername(ownerUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        MeetingUser ownerMeetingUser = new MeetingUser();
+        ownerMeetingUser.setOwner(true);
+        ownerMeetingUser.setUser(user);
+        meeting.getMeetingUsers().add(ownerMeetingUser);
+
         meeting.getPlace().setMeeting(meeting);
         meeting.getMeetingUsers().stream().forEach(meetingUser -> {
             userRepository.findById(meetingUser.getUser().getId())

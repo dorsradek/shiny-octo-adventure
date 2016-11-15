@@ -21,7 +21,7 @@ public interface IMeetingService {
 
     List<Meeting> findByUserIdActive(Optional<Long> userId);
 
-    void save(Meeting meeting);
+    void save(Meeting meeting, String ownerUsername);
 
     void update(Optional<Long> meetingId, Meeting meeting);
 
