@@ -1,5 +1,7 @@
 package pl.dors.radek.followme.model.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -35,6 +37,7 @@ public class Authority {
         this.name = name;
     }
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     public List<User> getUsers() {
         return users;
