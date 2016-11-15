@@ -37,7 +37,7 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public List<Meeting> findAll(String username) {
+    public List<Meeting> findByUsername(String username) {
         return meetingRepository.findByUsername(username);
     }
 
@@ -63,7 +63,7 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void save(Meeting meeting, String ownerUsername) {
+    public void saveWithUsernameAsOwner(Meeting meeting, String ownerUsername) {
         User user = userRepository.findByUsername(ownerUsername)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         MeetingUser ownerMeetingUser = new MeetingUser();

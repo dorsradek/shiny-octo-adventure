@@ -33,7 +33,7 @@ public class MeetingController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof JwtUser) {
             String username = ((JwtUser) principal).getUsername();
-            return meetingService.findAll(username);
+            return meetingService.findByUsername(username);
         } else {
             return new ArrayList<>();
         }
@@ -45,7 +45,7 @@ public class MeetingController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof JwtUser) {
             String username = ((JwtUser) principal).getUsername();
-            meetingService.save(meeting, username);
+            meetingService.saveWithUsernameAsOwner(meeting, username);
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meeting.getId()).toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);

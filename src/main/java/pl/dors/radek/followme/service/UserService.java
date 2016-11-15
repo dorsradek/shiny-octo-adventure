@@ -7,6 +7,7 @@ import pl.dors.radek.followme.repository.UserRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -36,6 +37,11 @@ public class UserService implements IUserService {
     public User findOne(Optional<Long> userId) {
         return userRepository.findById(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")))
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public List<User> findAllExceptUsername(String username) {
+        return userRepository.findAll().stream().filter(user -> !user.getUsername().equals(username)).collect(Collectors.toList());
     }
 
 }

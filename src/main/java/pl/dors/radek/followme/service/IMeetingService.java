@@ -11,7 +11,7 @@ import java.util.Optional;
  */
 public interface IMeetingService {
 
-    List<Meeting> findAll(String username);
+    List<Meeting> findByUsername(String username);
 
     List<Meeting> findAllActive();
 
@@ -21,7 +21,7 @@ public interface IMeetingService {
 
     List<Meeting> findByUserIdActive(Optional<Long> userId);
 
-    void save(Meeting meeting, String ownerUsername);
+    void saveWithUsernameAsOwner(Meeting meeting, String ownerUsername);
 
     void update(Optional<Long> meetingId, Meeting meeting);
 

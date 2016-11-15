@@ -67,15 +67,15 @@ public class MeetingServiceCommon {
     }
 
     public static void findAll(IMeetingService meetingService) throws Exception {
-        assertThat(meetingService.findAll("U111")).hasSize(1);
-        assertThat(meetingService.findAll("U111").get(0).getName()).isEqualTo("M1");
+        assertThat(meetingService.findByUsername("U111")).hasSize(1);
+        assertThat(meetingService.findByUsername("U111").get(0).getName()).isEqualTo("M1");
     }
 
     public static void save(IMeetingService meetingService) throws Exception {
         Meeting meeting = new Meeting("M1");
         Place place = new Place("P1", 1, 2);
         meeting.setPlace(place);
-        meetingService.save(meeting, "U111");
+        meetingService.saveWithUsernameAsOwner(meeting, "U111");
         assertThat(meeting.getMeetingUsers()).hasSize(1);
         assertThat(meeting.getMeetingUsers().get(0).getUser().getUsername()).isEqualTo("U111");
         assertThat(meeting.getMeetingUsers().get(0).getUser().getId()).isNotNull();

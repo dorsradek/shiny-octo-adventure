@@ -15,4 +15,6 @@ public interface IUserService {
     User findByUsername(String name);
 
     User findOne(Optional<Long> userId);
+
+    List<User> findAllExceptUsername(String username);
 }
