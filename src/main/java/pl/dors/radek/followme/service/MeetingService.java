@@ -151,16 +151,4 @@ public class MeetingService implements IMeetingService {
                 .forEach(meetingUserRepository::delete);
     }
 
-    @Override
-    public void updateUser(Optional<Long> meetingId, Optional<Long> userId, MeetingUser meetingUser) {
-        MeetingUser meetingUserDb = meetingUserRepository.findByMeetingIdAndUserId(
-                meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")),
-                userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null"))
-        ).orElseThrow(() -> new RuntimeException("MeetingUser not found"));
-        meetingUserDb.setX(meetingUser.getX());
-        meetingUserDb.setY(meetingUser.getY());
-        meetingUserDb.setLastUpdate(LocalDateTime.now());
-        meetingUserRepository.save(meetingUserDb);
-    }
-
 }

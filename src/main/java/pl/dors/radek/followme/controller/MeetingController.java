@@ -86,17 +86,6 @@ public class MeetingController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{meetingId}/users/{userId}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateUser(@PathVariable("meetingId") long meetingId,
-                                           @PathVariable("userId") long userId,
-                                           @RequestBody MeetingUser meetingPerson,
-                                           UriComponentsBuilder uriComponentsBuilder) {
-        meetingService.updateUser(Optional.ofNullable(meetingId), Optional.ofNullable(userId), meetingPerson);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meetingId).toUri());
-        return new ResponseEntity<>(headers, HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/{meetingId}/users/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<Meeting> deleteUser(@PathVariable("meetingId") long meetingId,
                                               @PathVariable("userId") long userId) {

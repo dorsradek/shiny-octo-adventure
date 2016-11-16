@@ -7,6 +7,7 @@ import pl.dors.radek.followme.model.Relationship;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class User {
     private List<MeetingUser> meetingUsers;
     private List<Relationship> myFriends;
     private List<Relationship> iAmFriendOf;
+
+    //location
+    private double x;
+    private double y;
+    private LocalDateTime lastUpdate;
 
     @Id
     @Column(name = "ID")
@@ -150,6 +156,33 @@ public class User {
 
     public void setiAmFriendOf(List<Relationship> iAmFriendOf) {
         this.iAmFriendOf = iAmFriendOf;
+    }
+
+    @Column(name = "X")
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    @Column(name = "Y")
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    @Column(name = "LAST_UPDATE")
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
 }

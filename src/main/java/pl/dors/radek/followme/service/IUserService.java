@@ -17,4 +17,6 @@ public interface IUserService {
     User findOne(Optional<Long> userId);
 
     List<User> findAllExceptUsername(String username);
+
+    void updateLocation(String username, double x, double y);
 }

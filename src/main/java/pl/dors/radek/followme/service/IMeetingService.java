@@ -35,6 +35,4 @@ public interface IMeetingService {
 
     void deleteUsers(Optional<Long> meetingId, List<Optional<Long>> usersIds);
 
-    void updateUser(Optional<Long> meetingId, Optional<Long> userId, MeetingUser meetingPerson);
-
 }

@@ -5,6 +5,7 @@ import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +43,16 @@ public class UserService implements IUserService {
     @Override
     public List<User> findAllExceptUsername(String username) {
         return userRepository.findAll().stream().filter(user -> !user.getUsername().equals(username)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateLocation(String username, double x, double y) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setX(x);
+        user.setY(y);
+        user.setLastUpdate(LocalDateTime.now());
+        userRepository.save(user);
     }
 
 }

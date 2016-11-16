@@ -22,9 +22,6 @@ public class MeetingUser {
     @JsonIgnore
     private MeetingUserID pk = new MeetingUserID();
     private boolean owner;
-    private double x;
-    private double y;
-    private LocalDateTime lastUpdate;
     private UserStatus userStatus;
 
     @EmbeddedId
@@ -43,33 +40,6 @@ public class MeetingUser {
 
     public void setOwner(boolean owner) {
         this.owner = owner;
-    }
-
-    @Column(name = "X")
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    @Column(name = "Y")
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    @Column(name = "LAST_UPDATE")
-    public LocalDateTime getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(LocalDateTime lastUpdate) {
-        this.lastUpdate = lastUpdate;
     }
 
     @Column(name = "USER_STATUS")
