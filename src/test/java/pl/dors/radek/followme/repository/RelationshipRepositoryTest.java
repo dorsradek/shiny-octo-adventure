@@ -96,11 +96,11 @@ public class RelationshipRepositoryTest {
 
     @Test
     public void findAllFriendsByUserId() {
-        List<Relationship> relationships = relationshipRepository.findAllFriendsByUserId(u1.getId());
+        List<Relationship> relationships = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(u1.getId());
         assertThat(relationships).hasSize(2);
-        relationships = relationshipRepository.findAllFriendsByUserId(u2.getId());
+        relationships = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(u2.getId());
         assertThat(relationships).hasSize(1);
-        relationships = relationshipRepository.findAllFriendsByUserId(u3.getId());
+        relationships = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(u3.getId());
         assertThat(relationships).hasSize(1);
     }
 

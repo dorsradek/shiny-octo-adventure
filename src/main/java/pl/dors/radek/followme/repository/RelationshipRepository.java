@@ -17,7 +17,7 @@ public interface RelationshipRepository extends CrudRepository<Relationship, Lon
     List<Relationship> findAll();
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.user.id = :userId AND r.relationshipStatus = pl.dors.radek.followme.model.RelationshipStatus.ACCEPTED")
-    List<Relationship> findAllFriendsByUserId(@Param("userId") Long userId);
+    List<Relationship> findAllRelationshipsByUserIdAndAreFriends(@Param("userId") Long userId);
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.user.id = :userId AND r.relationshipStatus = :status")
     List<Relationship> findAllRelationshipsByOwnerUserIdAndStatus(@Param("userId") Long userId, @Param("status") RelationshipStatus status);

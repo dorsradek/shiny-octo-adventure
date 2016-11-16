@@ -30,8 +30,7 @@ public class FriendshipService implements IFriendshipService {
     public List<User> findAllFriends(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-        List<Relationship> relationships = relationshipRepository
-                .findAllRelationshipsByOwnerUserIdAndStatus(user.getId(), RelationshipStatus.ACCEPTED);
+        List<Relationship> relationships = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(user.getId());
         return relationships.stream().map(r -> r.getPk().getFriend()).collect(Collectors.toList());
     }
 
