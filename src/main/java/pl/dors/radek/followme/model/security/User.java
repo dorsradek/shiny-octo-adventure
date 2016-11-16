@@ -2,6 +2,7 @@ package pl.dors.radek.followme.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import pl.dors.radek.followme.model.MeetingUser;
+import pl.dors.radek.followme.model.Relationship;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,6 +24,8 @@ public class User {
     private Date lastPasswordResetDate;
     private List<Authority> authorities;
     private List<MeetingUser> meetingUsers;
+    private List<Relationship> myFriends;
+    private List<Relationship> iAmFriendOf;
 
     @Id
     @Column(name = "ID")
@@ -130,4 +133,23 @@ public class User {
     public void setMeetingUsers(List<MeetingUser> meetingUsers) {
         this.meetingUsers = meetingUsers;
     }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
+    public List<Relationship> getMyFriends() {
+        return myFriends;
+    }
+
+    public void setMyFriends(List<Relationship> myFriends) {
+        this.myFriends = myFriends;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.friend", cascade = CascadeType.ALL)
+    public List<Relationship> getiAmFriendOf() {
+        return iAmFriendOf;
+    }
+
+    public void setiAmFriendOf(List<Relationship> iAmFriendOf) {
+        this.iAmFriendOf = iAmFriendOf;
+    }
+
 }
