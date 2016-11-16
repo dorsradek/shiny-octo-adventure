@@ -34,13 +34,11 @@ public class MeetingUserRepositoryTest {
     @Autowired
     private MeetingUserRepository meetingUserRepository;
 
-    private List<User> users;
     private List<Meeting> meetings;
-    private List<MeetingUser> meetingUsers;
 
     @Before
     public void setUp() throws Exception {
-        meetingUsers = new ArrayList<>();
+        List<MeetingUser> meetingUsers = new ArrayList<>();
         meetings = Arrays.asList(
                 new Meeting("m1"),
                 new Meeting("m2")
@@ -52,7 +50,7 @@ public class MeetingUserRepositoryTest {
         u2.setUsername("User2");
         User u3 = new User();
         u3.setUsername("User3");
-        users = Arrays.asList(u1, u2, u3);
+        List<User> users = Arrays.asList(u1, u2, u3);
         users.forEach(entityManager::persist);
 
         MeetingUser meetingUser1 = new MeetingUser();
