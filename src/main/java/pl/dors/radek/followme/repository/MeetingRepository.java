@@ -19,7 +19,7 @@ public interface MeetingRepository extends CrudRepository<Meeting, Long> {
 
     List<Meeting> findByActiveTrue();
 
-    @Query(value = "SELECT m FROM Meeting m LEFT JOIN FETCH m.meetingUsers mu WHERE mu.pk.user.username = :username")
+    @Query(value = "SELECT m from Meeting m where m.id in (SELECT mu.pk.meeting.id FROM MeetingUser mu WHERE mu.pk.user.username = :username)")
     List<Meeting> findByUsername(@Param("username") String username);
 
     @Query(value = "SELECT m FROM Meeting m LEFT JOIN FETCH m.meetingUsers mu WHERE mu.pk.user.id = :userId")
