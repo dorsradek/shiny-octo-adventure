@@ -1,7 +1,6 @@
 package pl.dors.radek.followme.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import pl.dors.radek.followme.model.ColorEnum;
 import pl.dors.radek.followme.model.MeetingUser;
 import pl.dors.radek.followme.model.Relationship;
 
@@ -33,7 +32,7 @@ public class User {
     private double x;
     private double y;
     private LocalDateTime lastUpdate;
-    private ColorEnum color;
+    private String color;
 
     @Id
     @Column(name = "ID")
@@ -188,12 +187,11 @@ public class User {
     }
 
     @Column(name = "COLOR")
-    @Enumerated(EnumType.STRING)
-    public ColorEnum getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(ColorEnum color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
