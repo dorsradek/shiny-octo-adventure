@@ -13,6 +13,8 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,12 +51,46 @@ public class PlaceRepositoryTest {
     }
 
     @Test
+    public void findAllTest_Empty() throws Exception {
+        places.forEach(entityManager::remove);
+
+        List<Place> result = placeRepository.findAll();
+
+        assertThat(result).hasSize(0);
+    }
+
+    @Test
     public void findByNameTest() throws Exception {
         List<Place> result = placeRepository.findByName("Stefan");
 
         assertThat(result).hasSize(1);
         assertThat(result).containsOnly(places.stream().filter(p -> p.getName().equals("Stefan")).findAny().get());
     }
+
+    @Test
+    public void findByNameTest_NotExist() throws Exception {
+        List<Place> result = placeRepository.findByName("Stefan2");
+
+        assertThat(result).hasSize(0);
+    }
+
+    @Test
+    public void findByIdTest() throws Exception {
+        Place place = places.get(0);
+
+        Optional<Place> result = placeRepository.findById(place.getId());
+
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getName()).isEqualTo(place.getName());
+    }
+
+    @Test
+    public void findByIdTest_NotExist() throws Exception {
+        Optional<Place> result = placeRepository.findById(places.stream().mapToLong(place -> place.getId()).sum());
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
 
     @Test
     public void saveTest() throws Exception {
