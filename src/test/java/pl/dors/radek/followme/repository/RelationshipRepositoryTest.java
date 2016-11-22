@@ -35,140 +35,360 @@ public class RelationshipRepositoryTest {
     @Autowired
     private RelationshipRepository relationshipRepository;
 
-    User u1;
-    User u2;
-    User u3;
-    User u4;
-    User u5;
+    User user1;
+    User user2;
+    User user3;
+    User user4;
+    User user5;
+    List<User> users;
+
+    Relationship relationship1;
+    Relationship relationship2;
+    Relationship relationship3;
+    Relationship relationship4;
+    Relationship relationship5;
+    List<Relationship> relationships;
 
     @Before
     public void setUp() throws Exception {
-        u1 = new User();
-        u1.setUsername("User1");
-        u2 = new User();
-        u2.setUsername("User2");
-        u3 = new User();
-        u3.setUsername("User3");
-        List<User> users = Arrays.asList(u1, u2, u3);
+        user1 = new User();
+        user1.setUsername("User1");
+        user2 = new User();
+        user2.setUsername("User2");
+        user3 = new User();
+        user3.setUsername("User3");
+        user4 = new User();
+        user4.setUsername("User4");
+        users = Arrays.asList(user1, user2, user3, user4);
         users.forEach(entityManager::persist);
 
         //Friends U1 - U2, U1 - U3
         //Pending U2 -> U3
-        List<Relationship> relationships = new ArrayList<>();
-        Relationship r1 = new Relationship();
-        r1.getPk().setUser(u1);
-        r1.getPk().setFriend(u2);
-        r1.setRelationshipStatus(RelationshipStatus.ACCEPTED);
-        relationships.add(r1);
+        relationships = new ArrayList<>();
+        relationship1 = new Relationship();
+        relationship1.getPk().setUser(user1);
+        relationship1.getPk().setFriend(user2);
+        relationship1.setRelationshipStatus(RelationshipStatus.ACCEPTED);
+        relationships.add(relationship1);
 
-        Relationship r2 = new Relationship();
-        r2.getPk().setUser(u2);
-        r2.getPk().setFriend(u1);
-        r2.setRelationshipStatus(RelationshipStatus.ACCEPTED);
-        relationships.add(r2);
+        relationship2 = new Relationship();
+        relationship2.getPk().setUser(user2);
+        relationship2.getPk().setFriend(user1);
+        relationship2.setRelationshipStatus(RelationshipStatus.ACCEPTED);
+        relationships.add(relationship2);
 
-        Relationship r3 = new Relationship();
-        r3.getPk().setUser(u1);
-        r3.getPk().setFriend(u3);
-        r3.setRelationshipStatus(RelationshipStatus.ACCEPTED);
-        relationships.add(r3);
+        relationship3 = new Relationship();
+        relationship3.getPk().setUser(user1);
+        relationship3.getPk().setFriend(user3);
+        relationship3.setRelationshipStatus(RelationshipStatus.ACCEPTED);
+        relationships.add(relationship3);
 
-        Relationship r4 = new Relationship();
-        r4.getPk().setUser(u3);
-        r4.getPk().setFriend(u1);
-        r4.setRelationshipStatus(RelationshipStatus.ACCEPTED);
-        relationships.add(r4);
+        relationship4 = new Relationship();
+        relationship4.getPk().setUser(user3);
+        relationship4.getPk().setFriend(user1);
+        relationship4.setRelationshipStatus(RelationshipStatus.ACCEPTED);
+        relationships.add(relationship4);
 
-        Relationship r5 = new Relationship();
-        r5.getPk().setUser(u2);
-        r5.getPk().setFriend(u3);
-        r5.setRelationshipStatus(RelationshipStatus.PENDING);
-        relationships.add(r5);
+        relationship5 = new Relationship();
+        relationship5.getPk().setUser(user2);
+        relationship5.getPk().setFriend(user3);
+        relationship5.setRelationshipStatus(RelationshipStatus.PENDING);
+        relationships.add(relationship5);
 
         relationships.forEach(entityManager::persist);
     }
 
     @Test
-    public void findAll() {
+    public void findAllTest() {
         List<Relationship> relationships = relationshipRepository.findAll();
         assertThat(relationships).hasSize(5);
     }
 
     @Test
-    public void findAllFriendsByUserId() {
-        List<Relationship> relationships = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(u1.getId());
-        assertThat(relationships).hasSize(2);
-        relationships = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(u2.getId());
-        assertThat(relationships).hasSize(1);
-        relationships = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(u3.getId());
-        assertThat(relationships).hasSize(1);
+    public void findAllTest_Empty() throws Exception {
+        relationships.forEach(entityManager::remove);
+
+        List<Relationship> result = relationshipRepository.findAll();
+
+        assertThat(result).isEmpty();
     }
 
     @Test
-    public void findAllRelationshipsByOwnerUserIdAndStatus() {
-        List<Relationship> relationships = relationshipRepository.findAllRelationshipsByOwnerUserIdAndStatus(u1.getId(), RelationshipStatus.PENDING);
-        assertThat(relationships).hasSize(0);
-        relationships = relationshipRepository.findAllRelationshipsByOwnerUserIdAndStatus(u1.getId(), RelationshipStatus.ACCEPTED);
-        assertThat(relationships).hasSize(2);
-        relationships = relationshipRepository.findAllRelationshipsByOwnerUserIdAndStatus(u2.getId(), RelationshipStatus.PENDING);
-        assertThat(relationships).hasSize(1);
-        relationships = relationshipRepository.findAllRelationshipsByOwnerUserIdAndStatus(u3.getId(), RelationshipStatus.PENDING);
-        assertThat(relationships).hasSize(0);
+    public void findAllRelationshipsByUserIdAndAreFriendsTest() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(user1.getId());
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(relationship1, relationship3);
     }
 
     @Test
-    public void findAllRelationshipsByFriendIdAndStatus() {
-        List<Relationship> relationships = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(u1.getId(), RelationshipStatus.PENDING);
-        assertThat(relationships).hasSize(0);
-        relationships = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(u1.getId(), RelationshipStatus.ACCEPTED);
-        assertThat(relationships).hasSize(2);
-        relationships = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(u2.getId(), RelationshipStatus.PENDING);
-        assertThat(relationships).hasSize(0);
-        relationships = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(u3.getId(), RelationshipStatus.PENDING);
-        assertThat(relationships).hasSize(1);
+    public void findAllRelationshipsByUserIdAndAreFriendsTest_hasOnePending() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(user2.getId());
+
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship2);
     }
 
     @Test
-    public void findRelationshipsByUserIdAndFriendId() {
-        Optional<Relationship> relationship = relationshipRepository.findRelationshipByUserIdAndFriendId(u1.getId(), u2.getId());
-        assertThat(relationship.get().getRelationshipStatus()).isNotNull();
-        relationship = relationshipRepository.findRelationshipByUserIdAndFriendId(u1.getId(), u3.getId());
-        assertThat(relationship.get().getRelationshipStatus()).isNotNull();
-        relationship = relationshipRepository.findRelationshipByUserIdAndFriendId(u2.getId(), u3.getId());
-        assertThat(relationship.get().getRelationshipStatus()).isNotNull();
+    public void findAllRelationshipsByUserIdAndAreFriendsTest_UserIdNotExists() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(users.stream().mapToLong(user -> user.getId()).sum());
+
+        assertThat(result).isEmpty();
     }
 
     @Test
-    public void deleteRelationships() {
-        u4 = new User();
-        u4.setUsername("User4");
-        u5 = new User();
-        u5.setUsername("User5");
-        List<User> users = Arrays.asList(u4, u5);
-        users.forEach(entityManager::persist);
+    public void findAllRelationshipsByUserIdAndAreFriendsTest_UserIdNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(null);
 
-        List<Relationship> relationships = new ArrayList<>();
-        Relationship r1 = new Relationship();
-        r1.getPk().setUser(u4);
-        r1.getPk().setFriend(u5);
-        r1.setRelationshipStatus(RelationshipStatus.ACCEPTED);
-        relationships.add(r1);
+        assertThat(result).isEmpty();
+    }
 
-        Relationship r2 = new Relationship();
-        r2.getPk().setUser(u5);
-        r2.getPk().setFriend(u4);
-        r2.setRelationshipStatus(RelationshipStatus.ACCEPTED);
-        relationships.add(r2);
-        relationships.forEach(entityManager::persist);
+    @Test
+    public void findAllRelationshipsByUserIdAndAreFriendsTest_RelationshipNotExists() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndAreFriends(user4.getId());
 
-        Optional<Relationship> relationship = relationshipRepository.findRelationshipByUserIdAndFriendId(u4.getId(), u5.getId());
-        assertThat(relationship.get().getRelationshipStatus()).isEqualTo(RelationshipStatus.ACCEPTED);
-        relationship = relationshipRepository.findRelationshipByUserIdAndFriendId(u5.getId(), u4.getId());
-        assertThat(relationship.get().getRelationshipStatus()).isEqualTo(RelationshipStatus.ACCEPTED);
+        assertThat(result).isEmpty();
+    }
 
-        relationships = relationshipRepository.findAllRelationships(u4.getId(), u5.getId());
-        assertThat(relationships).hasSize(2);
+    @Test
+    public void findAllRelationshipsByUserIdAndStatusTest() {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user1.getId(), RelationshipStatus.PENDING);
+        assertThat(result).isEmpty();
+        result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user1.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(relationship1, relationship3);
 
+        result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user2.getId(), RelationshipStatus.PENDING);
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship5);
+        result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user2.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship2);
+
+        result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user3.getId(), RelationshipStatus.PENDING);
+        assertThat(result).isEmpty();
+        result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user3.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship4);
+    }
+
+    @Test
+    public void findAllRelationshipsByUserIdAndStatusTest_UserIdNotExists() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(users.stream().mapToLong(user -> user.getId()).sum(), RelationshipStatus.ACCEPTED);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsByUserIdAndStatusTest_UserIdNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(null, RelationshipStatus.ACCEPTED);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsByUserIdAndStatusTest_StatusNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user1.getId(), null);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsByUserIdAndStatusTest_RelationshipNotExists() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user4.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).isEmpty();
+        result = relationshipRepository.findAllRelationshipsByUserIdAndStatus(user1.getId(), RelationshipStatus.PENDING);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsByFriendIdAndStatusTest() {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user1.getId(), RelationshipStatus.PENDING);
+        assertThat(result).isEmpty();
+        result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user1.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(relationship2, relationship4);
+
+        result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user2.getId(), RelationshipStatus.PENDING);
+        assertThat(result).isEmpty();
+        result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user2.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship1);
+
+        result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user3.getId(), RelationshipStatus.PENDING);
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship5);
+        result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user3.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship3);
+    }
+
+    @Test
+    public void findAllRelationshipsByFriendIdAndStatusTest_FriendIdNotExists() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(users.stream().mapToLong(user -> user.getId()).sum(), RelationshipStatus.ACCEPTED);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsByFriendIdAndStatusTest_FriendIdNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(null, RelationshipStatus.ACCEPTED);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsByFriendIdAndStatusTest_StatusNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user1.getId(), null);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsByFriendIdAndStatusTest_RelationshipNotExists() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user4.getId(), RelationshipStatus.ACCEPTED);
+        assertThat(result).isEmpty();
+
+        result = relationshipRepository.findAllRelationshipsByFriendIdAndStatus(user1.getId(), RelationshipStatus.PENDING);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findRelationshipByUserIdAndFriendIdTest() {
+        Optional<Relationship> result = relationshipRepository.findRelationshipByUserIdAndFriendId(user1.getId(), user2.getId());
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getRelationshipStatus()).isEqualTo(RelationshipStatus.ACCEPTED);
+
+        result = relationshipRepository.findRelationshipByUserIdAndFriendId(user2.getId(), user1.getId());
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getRelationshipStatus()).isEqualTo(RelationshipStatus.ACCEPTED);
+
+        result = relationshipRepository.findRelationshipByUserIdAndFriendId(user1.getId(), user3.getId());
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getRelationshipStatus()).isEqualTo(RelationshipStatus.ACCEPTED);
+
+        result = relationshipRepository.findRelationshipByUserIdAndFriendId(user3.getId(), user1.getId());
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getRelationshipStatus()).isEqualTo(RelationshipStatus.ACCEPTED);
+
+        result = relationshipRepository.findRelationshipByUserIdAndFriendId(user2.getId(), user3.getId());
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getRelationshipStatus()).isEqualTo(RelationshipStatus.PENDING);
+    }
+
+
+    @Test
+    public void findRelationshipByUserIdAndFriendIdTest_UserAndFriendNotExist() throws Exception {
+        Optional<Relationship> result = relationshipRepository.findRelationshipByUserIdAndFriendId(
+                users.stream().mapToLong(user -> user.getId()).sum(),
+                users.stream().mapToLong(user -> user.getId()).sum());
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findRelationshipByUserIdAndFriendIdTest_RelationshipNotExists() throws Exception {
+        Optional<Relationship> result = relationshipRepository.findRelationshipByUserIdAndFriendId(
+                user1.getId(),
+                user4.getId());
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findRelationshipByUserIdAndFriendIdTest_UserNull() throws Exception {
+        Optional<Relationship> result = relationshipRepository.findRelationshipByUserIdAndFriendId(
+                null,
+                user1.getId());
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findRelationshipByUserIdAndFriendIdTest_FriendNull() throws Exception {
+        Optional<Relationship> result = relationshipRepository.findRelationshipByUserIdAndFriendId(
+                user1.getId(),
+                null);
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findRelationshipByUserIdAndFriendIdTest_UserAndFriendNull() throws Exception {
+        Optional<Relationship> result = relationshipRepository.findRelationshipByUserIdAndFriendId(
+                null,
+                null);
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+
+    @Test
+    public void findAllRelationshipsTest() {
+        List<Relationship> result = relationshipRepository.findAllRelationships(user1.getId(), user2.getId());
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(relationship1, relationship2);
+
+        result = relationshipRepository.findAllRelationships(user2.getId(), user1.getId());
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(relationship1, relationship2);
+
+        result = relationshipRepository.findAllRelationships(user1.getId(), user3.getId());
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(relationship3, relationship4);
+
+        result = relationshipRepository.findAllRelationships(user3.getId(), user1.getId());
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(relationship3, relationship4);
+
+        result = relationshipRepository.findAllRelationships(user2.getId(), user3.getId());
+        assertThat(result).hasSize(1);
+        assertThat(result).containsOnly(relationship5);
+    }
+
+    @Test
+    public void findAllRelationshipsTest_UserAndFriendNotExist() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationships(
+                users.stream().mapToLong(user -> user.getId()).sum(),
+                users.stream().mapToLong(user -> user.getId()).sum());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsTest_RelationshipNotExists() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationships(
+                user1.getId(),
+                user4.getId());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsTest_UserNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationships(
+                null,
+                user1.getId());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsTest_FriendNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationships(
+                user1.getId(),
+                null);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findAllRelationshipsTest_UserAndFriendNull() throws Exception {
+        List<Relationship> result = relationshipRepository.findAllRelationships(
+                null,
+                null);
+
+        assertThat(result).isEmpty();
     }
 
 }

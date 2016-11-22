@@ -20,7 +20,7 @@ public interface RelationshipRepository extends CrudRepository<Relationship, Lon
     List<Relationship> findAllRelationshipsByUserIdAndAreFriends(@Param("userId") Long userId);
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.user.id = :userId AND r.relationshipStatus = :status")
-    List<Relationship> findAllRelationshipsByOwnerUserIdAndStatus(@Param("userId") Long userId, @Param("status") RelationshipStatus status);
+    List<Relationship> findAllRelationshipsByUserIdAndStatus(@Param("userId") Long userId, @Param("status") RelationshipStatus status);
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.friend.id = :friendId AND r.relationshipStatus = :status")
     List<Relationship> findAllRelationshipsByFriendIdAndStatus(@Param("friendId") Long friendId, @Param("status") RelationshipStatus status);
