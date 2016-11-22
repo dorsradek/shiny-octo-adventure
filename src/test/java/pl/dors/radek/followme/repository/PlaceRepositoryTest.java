@@ -14,10 +14,8 @@ import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -56,7 +54,7 @@ public class PlaceRepositoryTest {
 
         List<Place> result = placeRepository.findAll();
 
-        assertThat(result).hasSize(0);
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -90,7 +88,6 @@ public class PlaceRepositoryTest {
 
         assertThat(result.isPresent()).isFalse();
     }
-
 
     @Test
     public void saveTest() throws Exception {
