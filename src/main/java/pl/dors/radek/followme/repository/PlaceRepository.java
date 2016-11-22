@@ -15,6 +15,6 @@ public interface PlaceRepository extends CrudRepository<Place, Long> {
 
     List<Place> findAll();
 
-    Optional<Place> findById(Long id);
+    Optional<Place> findById(long id);
 
 }

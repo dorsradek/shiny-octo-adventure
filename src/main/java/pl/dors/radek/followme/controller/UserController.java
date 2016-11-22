@@ -45,7 +45,7 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ResponseEntity<User> showDetails(@PathVariable("userId") long userId) {
-        User user = userService.findOne(Optional.ofNullable(userId));
+        User user = userService.findById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

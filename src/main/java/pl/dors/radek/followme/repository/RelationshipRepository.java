@@ -17,20 +17,23 @@ public interface RelationshipRepository extends CrudRepository<Relationship, Lon
     List<Relationship> findAll();
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.user.id = :userId AND r.relationshipStatus = pl.dors.radek.followme.model.RelationshipStatus.ACCEPTED")
-    List<Relationship> findAllRelationshipsByUserIdAndAreFriends(@Param("userId") Long userId);
+    List<Relationship> findAllRelationshipsByUserIdAndAreFriends(@Param("userId") long userId);
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.user.id = :userId AND r.relationshipStatus = :status")
-    List<Relationship> findAllRelationshipsByUserIdAndStatus(@Param("userId") Long userId, @Param("status") RelationshipStatus status);
+    List<Relationship> findAllRelationshipsByUserIdAndStatus(@Param("userId") long userId, @Param("status") RelationshipStatus status);
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.friend.id = :friendId AND r.relationshipStatus = :status")
-    List<Relationship> findAllRelationshipsByFriendIdAndStatus(@Param("friendId") Long friendId, @Param("status") RelationshipStatus status);
+    List<Relationship> findAllRelationshipsByFriendIdAndStatus(@Param("friendId") long friendId, @Param("status") RelationshipStatus status);
 
     @Query("SELECT r FROM Relationship r WHERE r.pk.user.id = :userId AND r.pk.friend.id = :friendId")
-    Optional<Relationship> findRelationshipByUserIdAndFriendId(@Param("userId") Long userId, @Param("friendId") Long friendId);
+    Optional<Relationship> findRelationshipByUserIdAndFriendId(@Param("userId") long userId, @Param("friendId") long friendId);
+
+    @Query("SELECT r FROM Relationship r WHERE r.pk.user.id = :userId AND r.pk.friend.id = :friendId AND r.relationshipStatus = :status")
+    Optional<Relationship> findRelationshipByUserIdAndFriendIdAndStatus(@Param("userId") long userId, @Param("friendId") long friendId, @Param("status") RelationshipStatus status);
 
     @Query("SELECT r FROM Relationship r WHERE " +
             "(r.pk.user.id = :userId AND r.pk.friend.id = :friendId) OR " +
             "(r.pk.user.id = :friendId AND r.pk.friend.id = :userId)")
-    List<Relationship> findAllRelationships(@Param("userId") Long userId, @Param("friendId") Long friendId);
+    List<Relationship> findAllRelationships(@Param("userId") long userId, @Param("friendId") long friendId);
 
 }
