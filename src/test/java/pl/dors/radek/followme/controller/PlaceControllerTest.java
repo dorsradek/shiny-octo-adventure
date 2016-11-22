@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 import pl.dors.radek.followme.model.Place;
-import pl.dors.radek.followme.service.PlaceService;
+import pl.dors.radek.followme.service.impl.PlaceService;
 
 import java.util.Arrays;
 import java.util.List;
