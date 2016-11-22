@@ -39,9 +39,9 @@ public class MeetingServiceTest {
         MeetingServiceCommon.findAll(meetingService);
     }
 
-    @Test
-    public void save() throws Exception {
-        MeetingServiceCommon.save(meetingService);
-    }
+//    @Test
+//    public void save() throws Exception {
+//        MeetingServiceCommon.save(meetingService);
+//    }
 
 }
