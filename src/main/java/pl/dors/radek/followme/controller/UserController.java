@@ -3,9 +3,9 @@ package pl.dors.radek.followme.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.security.User;
@@ -31,7 +31,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<User> findAll() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof JwtUser) {
@@ -42,13 +42,13 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    @GetMapping(value = "/{userId}")
     public ResponseEntity<User> showDetails(@PathVariable("userId") long userId) {
         User user = userService.findById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{userId}/meetings", method = RequestMethod.GET)
+    @GetMapping(value = "/{userId}/meetings")
     public List<Meeting> findAllByUserId(@PathVariable("userId") long userId) {
         return meetingService.findByUserId(userId);
     }

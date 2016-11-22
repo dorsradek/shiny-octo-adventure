@@ -27,7 +27,7 @@ public class MeetingController {
         this.meetingService = meetingService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<Meeting> findAll() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof JwtUser) {
@@ -38,7 +38,7 @@ public class MeetingController {
         }
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping(value = "/create")
     public ResponseEntity<Void> create(@RequestBody Meeting meeting,
                                        UriComponentsBuilder uriComponentsBuilder) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -53,7 +53,7 @@ public class MeetingController {
         }
     }
 
-    @RequestMapping(value = "/{meetingId}", method = RequestMethod.PUT)
+    @PutMapping(value = "/{meetingId}")
     public ResponseEntity<Void> update(@PathVariable("meetingId") long meetingId,
                                        @RequestBody Meeting meeting,
                                        UriComponentsBuilder uriComponentsBuilder) {
@@ -63,19 +63,19 @@ public class MeetingController {
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{meetingId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{meetingId}")
     public ResponseEntity<Meeting> delete(@PathVariable("meetingId") long meetingId) {
         meetingService.delete(meetingId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{meetingId}", method = RequestMethod.GET)
+    @GetMapping(value = "/{meetingId}")
     public ResponseEntity<Meeting> showDetails(@PathVariable("meetingId") long meetingId) {
         Meeting meeting = meetingService.findOne(meetingId);
         return new ResponseEntity<>(meeting, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{meetingId}/addUser", method = RequestMethod.POST)
+    @PostMapping(value = "/{meetingId}/addUser")
     public ResponseEntity<Void> addUser(@PathVariable("meetingId") long meetingId,
                                         @RequestBody MeetingUser meetingPerson,
                                         UriComponentsBuilder uriComponentsBuilder) {
@@ -85,7 +85,7 @@ public class MeetingController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{meetingId}/users/{userId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{meetingId}/users/{userId}")
     public ResponseEntity<Meeting> deleteUser(@PathVariable("meetingId") long meetingId,
                                               @PathVariable("userId") long userId) {
         meetingService.deleteUser(meetingId, userId);
