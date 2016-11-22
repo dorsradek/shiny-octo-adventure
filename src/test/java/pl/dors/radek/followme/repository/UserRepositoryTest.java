@@ -51,11 +51,56 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findByNameTest() throws Exception {
+    public void findAllTest_Empty() throws Exception {
+        users.forEach(entityManager::remove);
+
+        List<User> result = userRepository.findAll();
+
+        assertThat(result).hasSize(0);
+    }
+
+    @Test
+    public void findByUsernameTest() throws Exception {
         Optional<User> result = userRepository.findByUsername("Stefan");
 
         assertThat(result.get()).isNotNull();
         assertThat(result.get().getUsername()).isEqualTo("Stefan");
+    }
+
+    @Test
+    public void findByUsernameTest_NotExist() throws Exception {
+        Optional<User> result = userRepository.findByUsername("Stefan1");
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findByUsernameTest_Null() throws Exception {
+        Optional<User> result = userRepository.findByUsername(null);
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findById() throws Exception {
+        Optional<User> result = userRepository.findById(users.get(0).getId());
+
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getUsername()).isEqualTo(users.get(0).getUsername());
+    }
+
+    @Test
+    public void findById_NotExist() throws Exception {
+        Optional<User> result = userRepository.findById(users.stream().mapToLong(user -> user.getId()).sum());
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findById_Null() throws Exception {
+        Optional<User> result = userRepository.findById(null);
+
+        assertThat(result.isPresent()).isFalse();
     }
 
     @Test
