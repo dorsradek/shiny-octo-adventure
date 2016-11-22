@@ -15,7 +15,6 @@ import pl.dors.radek.followme.service.IUserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -51,7 +50,7 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}/meetings", method = RequestMethod.GET)
     public List<Meeting> findAllByUserId(@PathVariable("userId") long userId) {
-        return meetingService.findByUserId(Optional.ofNullable(userId));
+        return meetingService.findByUserId(userId);
     }
 
 //    @RequestMapping(value = "/create", method = RequestMethod.POST)

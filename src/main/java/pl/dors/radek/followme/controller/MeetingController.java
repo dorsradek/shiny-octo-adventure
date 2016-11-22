@@ -13,7 +13,6 @@ import pl.dors.radek.followme.service.IMeetingService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -58,7 +57,7 @@ public class MeetingController {
     public ResponseEntity<Void> update(@PathVariable("meetingId") long meetingId,
                                        @RequestBody Meeting meeting,
                                        UriComponentsBuilder uriComponentsBuilder) {
-        meetingService.update(Optional.ofNullable(meetingId), meeting);
+        meetingService.update(meetingId, meeting);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meeting.getId()).toUri());
         return new ResponseEntity<>(headers, HttpStatus.OK);
@@ -66,13 +65,13 @@ public class MeetingController {
 
     @RequestMapping(value = "/{meetingId}", method = RequestMethod.DELETE)
     public ResponseEntity<Meeting> delete(@PathVariable("meetingId") long meetingId) {
-        meetingService.delete(Optional.ofNullable(meetingId));
+        meetingService.delete(meetingId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{meetingId}", method = RequestMethod.GET)
     public ResponseEntity<Meeting> showDetails(@PathVariable("meetingId") long meetingId) {
-        Meeting meeting = meetingService.findOne(Optional.ofNullable(meetingId));
+        Meeting meeting = meetingService.findOne(meetingId);
         return new ResponseEntity<>(meeting, HttpStatus.OK);
     }
 
@@ -80,7 +79,7 @@ public class MeetingController {
     public ResponseEntity<Void> addUser(@PathVariable("meetingId") long meetingId,
                                         @RequestBody MeetingUser meetingPerson,
                                         UriComponentsBuilder uriComponentsBuilder) {
-        meetingService.addUser((Optional.ofNullable(meetingId)), meetingPerson);
+        meetingService.addUser(meetingId, meetingPerson);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponentsBuilder.path("/meetings/{id}").buildAndExpand(meetingId).toUri());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
@@ -89,7 +88,7 @@ public class MeetingController {
     @RequestMapping(value = "/{meetingId}/users/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<Meeting> deleteUser(@PathVariable("meetingId") long meetingId,
                                               @PathVariable("userId") long userId) {
-        meetingService.deleteUser(Optional.ofNullable(meetingId), Optional.ofNullable(userId));
+        meetingService.deleteUser(meetingId, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
