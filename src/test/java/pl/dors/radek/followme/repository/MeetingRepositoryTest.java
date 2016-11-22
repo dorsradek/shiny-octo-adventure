@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -81,7 +82,29 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findByIdTest() throws Exception {
+        Optional<Meeting> result = meetingRepository.findById(meetings.get(0).getId());
+
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getName()).isEqualTo(meetings.get(0).getName());
+    }
+
+    @Test
+    public void findByIdTest_NotExist() throws Exception {
+        Optional<Meeting> result = meetingRepository.findById(meetings.stream().mapToLong(user -> user.getId()).sum());
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findByIdTest_Null() throws Exception {
+        Optional<Meeting> result = meetingRepository.findById(null);
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findAllTest() throws Exception {
         List<Meeting> result = meetingRepository.findAll();
 
         assertThat(result).hasSize(2);
@@ -89,7 +112,7 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findAll_Empty() throws Exception {
+    public void findAllTest_Empty() throws Exception {
         meetings.forEach(entityManager::remove);
 
         List<Meeting> result = meetingRepository.findAll();
@@ -98,7 +121,7 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findByActiveTrue() throws Exception {
+    public void findByActiveTrueTest() throws Exception {
         List<Meeting> result = meetingRepository.findByActiveTrue();
 
         assertThat(result).hasSize(1);
@@ -106,7 +129,7 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findByActiveTrue_Empty() throws Exception {
+    public void findByActiveTrueTest_Empty() throws Exception {
         entityManager.remove(meeting2);
 
         List<Meeting> result = meetingRepository.findByActiveTrue();
@@ -115,7 +138,7 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findByUsername() throws Exception {
+    public void findByUsernameTest() throws Exception {
         List<Meeting> result = meetingRepository.findByUsername("user1");
 
         assertThat(result).hasSize(1);
@@ -123,14 +146,21 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findByUsername_NotExist() throws Exception {
+    public void findByUsernameTest_NotExist() throws Exception {
         List<Meeting> result = meetingRepository.findByUsername("user12");
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findByUsernameTest_Null() throws Exception {
+        List<Meeting> result = meetingRepository.findByUsername(null);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findByUserIdTest() throws Exception {
         List<Meeting> result = meetingRepository.findByUserId(user1.getId());
 
         assertThat(result).hasSize(1);
@@ -138,14 +168,21 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findById_NotExist() throws Exception {
+    public void findByUserIdTest_NotExist() throws Exception {
         List<Meeting> result = meetingRepository.findByUserId(users.stream().mapToLong(user -> user.getId()).sum());
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void findByUserIdAndActiveTrue() throws Exception {
+    public void findByUserIdTest_Null() throws Exception {
+        List<Meeting> result = meetingRepository.findByUserId(null);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findByUserIdAndActiveTrueTest() throws Exception {
         List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(user2.getId());
 
         assertThat(result).hasSize(1);
@@ -153,15 +190,22 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findByUserIdAndActiveTrue_IdNotExist() throws Exception {
+    public void findByUserIdAndActiveTrueTest_IdNotExist() throws Exception {
         List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(users.stream().mapToLong(user -> user.getId()).sum());
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void findByUserIdAndActiveTrue_UserExistButInactive() throws Exception {
+    public void findByUserIdAndActiveTrueTest_UserExistButInactive() throws Exception {
         List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(user1.getId());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findByUserIdAndActiveTrueTest_Null() throws Exception {
+        List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(null);
 
         assertThat(result).isEmpty();
     }
