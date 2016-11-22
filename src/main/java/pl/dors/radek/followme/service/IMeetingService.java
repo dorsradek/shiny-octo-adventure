@@ -15,7 +15,7 @@ public interface IMeetingService {
 
     List<Meeting> findAllActive();
 
-    Meeting findOne(long meetingId);
+    Meeting findById(long meetingId);
 
     List<Meeting> findByUserId(long userId);
 

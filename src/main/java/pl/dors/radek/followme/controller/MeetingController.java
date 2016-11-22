@@ -71,7 +71,7 @@ public class MeetingController {
 
     @GetMapping(value = "/{meetingId}")
     public ResponseEntity<Meeting> showDetails(@PathVariable("meetingId") long meetingId) {
-        Meeting meeting = meetingService.findOne(meetingId);
+        Meeting meeting = meetingService.findById(meetingId);
         return new ResponseEntity<>(meeting, HttpStatus.OK);
     }
 

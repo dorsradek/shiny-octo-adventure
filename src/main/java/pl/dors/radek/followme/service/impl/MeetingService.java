@@ -47,7 +47,7 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public Meeting findOne(long meetingId) {
+    public Meeting findById(long meetingId) {
         return meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
     }
