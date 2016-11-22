@@ -15,24 +15,24 @@ public interface IMeetingService {
 
     List<Meeting> findAllActive();
 
-    Meeting findOne(Optional<Long> meetingId);
+    Meeting findOne(long meetingId);
 
-    List<Meeting> findByUserId(Optional<Long> userId);
+    List<Meeting> findByUserId(long userId);
 
-    List<Meeting> findByUserIdActive(Optional<Long> userId);
+    List<Meeting> findByUserIdActive(long userId);
 
     void saveWithUsernameAsOwner(Meeting meeting, String ownerUsername);
 
-    void update(Optional<Long> meetingId, Meeting meeting);
+    void update(long meetingId, Meeting meeting);
 
-    void delete(Optional<Long> meetingId);
+    void delete(long meetingId);
 
-    void addUser(Optional<Long> meetingId, MeetingUser meetingPerson);
+    void addUser(long meetingId, MeetingUser meetingPerson);
 
-    void addUsers(Optional<Long> meetingId, List<MeetingUser> meetingPersons);
+    void addUsers(long meetingId, List<MeetingUser> meetingPersons);
 
-    void deleteUser(Optional<Long> meetingId, Optional<Long> userId);
+    void deleteUser(long meetingId, long userId);
 
-    void deleteUsers(Optional<Long> meetingId, List<Optional<Long>> usersIds);
+    void deleteUsers(long meetingId, List<Long> usersIds);
 
 }

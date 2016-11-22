@@ -14,7 +14,6 @@ import pl.dors.radek.followme.service.IMeetingService;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -48,19 +47,19 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public Meeting findOne(Optional<Long> meetingId) {
-        return meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
+    public Meeting findOne(long meetingId) {
+        return meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
     }
 
     @Override
-    public List<Meeting> findByUserId(Optional<Long> userId) {
-        return meetingRepository.findByUserId(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")));
+    public List<Meeting> findByUserId(long userId) {
+        return meetingRepository.findByUserId(userId);
     }
 
     @Override
-    public List<Meeting> findByUserIdActive(Optional<Long> userId) {
-        return meetingRepository.findByUserIdAndActiveTrue(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")));
+    public List<Meeting> findByUserIdActive(long userId) {
+        return meetingRepository.findByUserIdAndActiveTrue(userId);
     }
 
     @Override
@@ -86,8 +85,8 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void update(Optional<Long> meetingId, Meeting meeting) {
-        Meeting meetingDb = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
+    public void update(long meetingId, Meeting meeting) {
+        Meeting meetingDb = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         meetingDb.setName(meeting.getName());
         meetingDb.setLastUpdate(LocalDateTime.now());
@@ -96,8 +95,8 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void delete(Optional<Long> meetingId) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
+    public void delete(long meetingId) {
+        Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         meeting.setLastUpdate(LocalDateTime.now());
         meeting.setActive(false);
@@ -105,8 +104,8 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void addUser(Optional<Long> meetingId, MeetingUser meetingUser) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
+    public void addUser(long meetingId, MeetingUser meetingUser) {
+        Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         userRepository.findById(meetingUser.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -116,8 +115,8 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void addUsers(Optional<Long> meetingId, List<MeetingUser> meetingUsers) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
+    public void addUsers(long meetingId, List<MeetingUser> meetingUsers) {
+        Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         meetingUsers.stream().forEach(meetingUser -> {
             userRepository.findById(meetingUser.getUser().getId())
@@ -129,26 +128,26 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void deleteUser(Optional<Long> meetingId, Optional<Long> userId) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
+    public void deleteUser(long meetingId, long userId) {
+        Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
-        userRepository.findById(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")))
+        userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         meeting.getMeetingUsers().stream()
-                .filter(meetingUser -> meetingUser.getUser().getId().equals(userId.get()))
+                .filter(meetingUser -> meetingUser.getUser().getId().equals(userId))
                 .forEach(meetingUserRepository::delete);
     }
 
     @Override
-    public void deleteUsers(Optional<Long> meetingId, List<Optional<Long>> usersIds) {
-        Meeting meeting = meetingRepository.findById(meetingId.orElseThrow(() -> new IllegalArgumentException("Meeting id can't be null")))
+    public void deleteUsers(long meetingId, List<Long> usersIds) {
+        Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         usersIds.stream().forEach(userId -> {
-            userRepository.findById(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")))
+            userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
         });
         meeting.getMeetingUsers().stream()
-                .filter(meetingUser -> usersIds.stream().anyMatch(placeId -> meetingUser.getUser().getId().equals(placeId.orElseThrow(() -> new IllegalArgumentException("Person id can't be null")))))
+                .filter(meetingUser -> usersIds.stream().anyMatch(placeId -> meetingUser.getUser().getId().equals(placeId)))
                 .forEach(meetingUserRepository::delete);
     }
 
