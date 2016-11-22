@@ -1,5 +1,6 @@
 package pl.dors.radek.followme.service;
 
+import pl.dors.radek.followme.model.Relationship;
 import pl.dors.radek.followme.model.security.User;
 
 import java.util.List;
@@ -13,9 +14,9 @@ public interface IFriendshipService {
 
     List<User> findAllReceivedInvitations(String username);
 
-    void addToFriends(String username, User user);
+    Relationship addToFriends(String username, User user);
 
-    void acceptInvitation(String username, User user);
+    Relationship acceptInvitation(String username, User user);
 
-    void removeFromFriends(String username, User user);
+    void removeFromFriends(String username, long friendId);
 }

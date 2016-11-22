@@ -1,13 +1,13 @@
-package pl.dors.radek.followme.service;
+package pl.dors.radek.followme.service.impl;
 
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.repository.UserRepository;
+import pl.dors.radek.followme.service.IUserService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -29,14 +29,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User findByUsername(String name) {
-        return userRepository.findByUsername(name)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
-    public User findOne(Optional<Long> userId) {
-        return userRepository.findById(userId.orElseThrow(() -> new IllegalArgumentException("User id can't be null")))
+    public User findById(long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -46,13 +46,16 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateLocation(String username, double x, double y) {
+    public User updateLocation(String username, Double x, Double y) {
+        if (x == null || y == null) {
+            throw new IllegalArgumentException("X or Y cant be null");
+        }
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setX(x);
         user.setY(y);
         user.setLastUpdate(LocalDateTime.now());
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
 }

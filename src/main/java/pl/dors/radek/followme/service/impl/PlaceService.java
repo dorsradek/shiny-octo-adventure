@@ -1,8 +1,9 @@
-package pl.dors.radek.followme.service;
+package pl.dors.radek.followme.service.impl;
 
 import org.springframework.stereotype.Service;
 import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.repository.PlaceRepository;
+import pl.dors.radek.followme.service.IPlaceService;
 
 import javax.transaction.Transactional;
 import java.util.List;

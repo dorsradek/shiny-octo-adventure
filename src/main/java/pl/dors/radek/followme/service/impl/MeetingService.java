@@ -1,4 +1,4 @@
-package pl.dors.radek.followme.service;
+package pl.dors.radek.followme.service.impl;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -9,6 +9,7 @@ import pl.dors.radek.followme.repository.MeetingRepository;
 import pl.dors.radek.followme.repository.MeetingUserRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.UserRepository;
+import pl.dors.radek.followme.service.IMeetingService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
