@@ -175,13 +175,6 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findByUserIdTest_Null() throws Exception {
-        List<Meeting> result = meetingRepository.findByUserId(null);
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     public void findByUserIdAndActiveTrueTest() throws Exception {
         List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(user2.getId());
 
@@ -190,7 +183,7 @@ public class MeetingRepositoryTest {
     }
 
     @Test
-    public void findByUserIdAndActiveTrueTest_IdNotExist() throws Exception {
+    public void findByUserIdAndActiveTrueTest_UserNotExists() throws Exception {
         List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(users.stream().mapToLong(user -> user.getId()).sum());
 
         assertThat(result).isEmpty();
@@ -199,13 +192,6 @@ public class MeetingRepositoryTest {
     @Test
     public void findByUserIdAndActiveTrueTest_UserExistButInactive() throws Exception {
         List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(user1.getId());
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void findByUserIdAndActiveTrueTest_Null() throws Exception {
-        List<Meeting> result = meetingRepository.findByUserIdAndActiveTrue(null);
 
         assertThat(result).isEmpty();
     }

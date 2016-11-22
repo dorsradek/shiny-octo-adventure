@@ -122,13 +122,6 @@ public class MeetingUserRepositoryTest {
     }
 
     @Test
-    public void findByMeetingIdTest_Null() throws Exception {
-        List<MeetingUser> result = meetingUserRepository.findByMeetingId(null);
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     public void findByUserIdTest() throws Exception {
         List<MeetingUser> result = meetingUserRepository.findByUserId(users.stream().filter(m -> m.getUsername().equals("User1")).findAny().get().getId());
 
@@ -151,13 +144,6 @@ public class MeetingUserRepositoryTest {
     }
 
     @Test
-    public void findByUserIdTest_Null() throws Exception {
-        List<MeetingUser> result = meetingUserRepository.findByUserId(null);
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     public void findByMeetingIdAndUserIdTest() throws Exception {
         Optional<MeetingUser> result = meetingUserRepository.findByMeetingIdAndUserId(
                 meetings.stream().filter(m -> m.getName().equals("meeting1")).findAny().get().getId(),
@@ -166,15 +152,6 @@ public class MeetingUserRepositoryTest {
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get().getMeeting().getName()).isEqualTo("meeting1");
         assertThat(result.get().getUser().getUsername()).isEqualTo("User1");
-    }
-
-    @Test
-    public void findByMeetingIdAndUserIdTest_MeetingAndUserNotExists() throws Exception {
-        Optional<MeetingUser> result = meetingUserRepository.findByMeetingIdAndUserId(
-                meetings.stream().mapToLong(meeting -> meeting.getId()).sum(),
-                users.stream().mapToLong(user -> user.getId()).sum());
-
-        assertThat(result.isPresent()).isFalse();
     }
 
     @Test
@@ -187,28 +164,28 @@ public class MeetingUserRepositoryTest {
     }
 
     @Test
-    public void findByMeetingIdAndUserIdTest_MeetingNull() throws Exception {
+    public void findByMeetingIdAndUserIdTest_MeetingAndUserNotExist() throws Exception {
         Optional<MeetingUser> result = meetingUserRepository.findByMeetingIdAndUserId(
-                null,
+                meetings.stream().mapToLong(meeting -> meeting.getId()).sum(),
+                users.stream().mapToLong(user -> user.getId()).sum());
+
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    public void findByMeetingIdAndUserIdTest_MeetingNotExists() throws Exception {
+        Optional<MeetingUser> result = meetingUserRepository.findByMeetingIdAndUserId(
+                meetings.stream().mapToLong(meeting -> meeting.getId()).sum(),
                 users.stream().filter(m -> m.getUsername().equals("User3")).findAny().get().getId());
 
         assertThat(result.isPresent()).isFalse();
     }
 
     @Test
-    public void findByMeetingIdAndUserIdTest_UserNull() throws Exception {
+    public void findByMeetingIdAndUserIdTest_UserNotExists() throws Exception {
         Optional<MeetingUser> result = meetingUserRepository.findByMeetingIdAndUserId(
                 meetings.stream().filter(m -> m.getName().equals("meeting1")).findAny().get().getId(),
-                null);
-
-        assertThat(result.isPresent()).isFalse();
-    }
-
-    @Test
-    public void findByMeetingIdAndUserIdTest_MeetingAndUserNull() throws Exception {
-        Optional<MeetingUser> result = meetingUserRepository.findByMeetingIdAndUserId(
-                null,
-                null);
+                users.stream().mapToLong(user -> user.getId()).sum());
 
         assertThat(result.isPresent()).isFalse();
     }

@@ -97,13 +97,6 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findById_Null() throws Exception {
-        Optional<User> result = userRepository.findById(null);
-
-        assertThat(result.isPresent()).isFalse();
-    }
-
-    @Test
     public void saveTest() throws Exception {
         User user = new User();
         user.setUsername("U111");
