@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingUser;
+import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.model.UserStatus;
 import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.repository.MeetingRepository;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
 /**
@@ -52,7 +54,11 @@ public class MeetingServiceTest {
 
     User user1;
     User user2;
+    User user3;
     private List<User> users;
+
+    MeetingUser meetingUser2;
+    MeetingUser meetingUser1;
 
     @Before
     public void setUp() throws Exception {
@@ -76,11 +82,28 @@ public class MeetingServiceTest {
         user2.setUsername("ASDF");
         users = Arrays.asList(user1, user2);
 
-        MeetingUser meetingUser1 = new MeetingUser();
+        user3 = new User();
+        user3.setId(3L);
+        user3.setUsername("not-exists");
+
+        meetingUser1 = new MeetingUser();
         meetingUser1.setUser(user1);
         meetingUser1.setMeeting(meeting1);
         meetingUser1.setOwner(true);
         meetingUser1.setUserStatus(UserStatus.ACTIVE);
+
+        meetingUser2 = new MeetingUser();
+        meetingUser2.setUser(user2);
+        meetingUser2.setOwner(true);
+        meetingUser2.setUserStatus(UserStatus.ACTIVE);
+        meeting2.getMeetingUsers().add(meetingUser2);
+
+        Place place1 = new Place();
+        place1.setId(1L);
+        place1.setName("Place1");
+        place1.setX(11);
+        place1.setY(22);
+        meeting2.setPlace(place1);
 
         Mockito.when(meetingRepository.findByUsername(eq(user1.getUsername())))
                 .thenReturn(Arrays.asList(meeting1));
@@ -97,6 +120,35 @@ public class MeetingServiceTest {
                 .thenReturn(Optional.of(meeting3));
         Mockito.when(meetingRepository.findById(eq(meeting4.getId())))
                 .thenReturn(Optional.ofNullable(null));
+
+        Mockito.when(meetingRepository.findByUserId(user1.getId()))
+                .thenReturn(Arrays.asList(meeting1, meeting2));
+        Mockito.when(meetingRepository.findByUserId(user2.getId()))
+                .thenReturn(new ArrayList<>());
+
+        Mockito.when(meetingRepository.findByUserIdAndActiveTrue(user1.getId()))
+                .thenReturn(Arrays.asList(meeting1, meeting2));
+        Mockito.when(meetingRepository.findByUserIdAndActiveTrue(user2.getId()))
+                .thenReturn(new ArrayList<>());
+
+        Mockito.when(userRepository.findById(user1.getId()))
+                .thenReturn(Optional.of(user1));
+        Mockito.when(userRepository.findById(user2.getId()))
+                .thenReturn(Optional.of(user2));
+        Mockito.when(userRepository.findById(user3.getId()))
+                .thenReturn(Optional.ofNullable(null));
+
+        Mockito.when(userRepository.findByUsername(user1.getUsername()))
+                .thenReturn(Optional.of(user1));
+        Mockito.when(userRepository.findByUsername(user2.getUsername()))
+                .thenReturn(Optional.of(user2));
+        Mockito.when(userRepository.findByUsername(user3.getUsername()))
+                .thenReturn(Optional.ofNullable(null));
+
+        Mockito.when(placeRepository.save(any(Place.class)))
+                .then(i -> i.getArgumentAt(0, Place.class));
+        Mockito.when(meetingRepository.save(any(Meeting.class)))
+                .then(i -> i.getArgumentAt(0, Meeting.class));
     }
 
     @Test
@@ -131,6 +183,44 @@ public class MeetingServiceTest {
         meetingService.findById(meeting4.getId());
     }
 
+    @Test
+    public void findByUserIdTest() throws Exception {
+        List<Meeting> result = meetingService.findByUserId(user1.getId());
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(meeting1, meeting2);
+    }
+
+    @Test
+    public void findByUserIdTest_Empty() throws Exception {
+        List<Meeting> result = meetingService.findByUserId(user2.getId());
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findByUserIdActiveTest() throws Exception {
+        List<Meeting> result = meetingService.findByUserIdActive(user1.getId());
+        assertThat(result).hasSize(2);
+        assertThat(result).containsOnly(meeting1, meeting2);
+    }
+
+    @Test
+    public void findByUserIdActiveTest_Empty() throws Exception {
+        List<Meeting> result = meetingService.findByUserIdActive(user2.getId());
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void saveWithUsernameAsOwnerTest() throws Exception {
+        Meeting result = meetingService.saveWithUsernameAsOwner(meeting2, user1.getUsername());
+        assertThat(result).isNotNull();
+        assertThat(result.getPlace().getMeeting()).isEqualTo(meeting2);
+        assertThat(result.getMeetingUsers()).hasSize(2);
+        assertThat(result.getMeetingUsers()).contains(meetingUser2);
+        MeetingUser meetingUser3 = new MeetingUser();
+        meetingUser3.setMeeting(meeting2);
+        meetingUser3.setUser(user1);
+        assertThat(result.getMeetingUsers()).contains(meetingUser2, meetingUser3);
+    }
 
 //    @Test
 //    public void save() throws Exception {

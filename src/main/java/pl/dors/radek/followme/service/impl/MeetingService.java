@@ -63,7 +63,7 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void saveWithUsernameAsOwner(Meeting meeting, String ownerUsername) {
+    public Meeting saveWithUsernameAsOwner(Meeting meeting, String ownerUsername) {
         User user = userRepository.findByUsername(ownerUsername)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         MeetingUser ownerMeetingUser = new MeetingUser();
@@ -81,7 +81,7 @@ public class MeetingService implements IMeetingService {
 
         meeting.setLastUpdate(LocalDateTime.now());
         meeting.setActive(true);
-        meetingRepository.save(meeting);
+        return meetingRepository.save(meeting);
     }
 
     @Override
