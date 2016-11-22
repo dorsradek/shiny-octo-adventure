@@ -115,7 +115,6 @@ public class Meeting {
                 ", lastUpdate=" + lastUpdate +
                 ", active=" + active +
                 ", place=" + place +
-                ", meetingUsers=" + meetingUsers +
                 '}';
     }
 }

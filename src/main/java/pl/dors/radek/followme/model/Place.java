@@ -109,7 +109,6 @@ public class Place {
                 ", name='" + name + '\'' +
                 ", x=" + x +
                 ", y=" + y +
-                ", meeting=" + meeting +
                 '}';
     }
 
