@@ -1,4 +1,4 @@
-package pl.dors.radek.followme.service;
+package pl.dors.radek.followme.service.boot;
 
 import org.mockito.Mockito;
 import pl.dors.radek.followme.model.Meeting;
@@ -7,6 +7,7 @@ import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.repository.MeetingRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.UserRepository;
+import pl.dors.radek.followme.service.IMeetingService;
 
 import java.util.Arrays;
 import java.util.Optional;

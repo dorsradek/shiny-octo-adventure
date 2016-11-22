@@ -1,31 +1,32 @@
-package pl.dors.radek.followme.service.mockito;
+package pl.dors.radek.followme.service.boot;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.dors.radek.followme.repository.MeetingRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.UserRepository;
-import pl.dors.radek.followme.service.MeetingService;
-import pl.dors.radek.followme.service.MeetingServiceCommon;
+import pl.dors.radek.followme.service.impl.MeetingService;
 
 /**
  * Created by rdors on 2016-10-26.
  */
 @RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MeetingServiceTest {
 
-    @InjectMocks
+    @Autowired
     private MeetingService meetingService;
 
-    @Mock
+    @MockBean(name = "meetingRepository")
     private MeetingRepository meetingRepository;
-    @Mock
+    @MockBean(name = "placeRepository")
     private PlaceRepository placeRepository;
-    @Mock
+    @MockBean(name = "userRepository")
     private UserRepository userRepository;
 
     @Before
