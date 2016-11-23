@@ -4,7 +4,6 @@ import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.MeetingUser;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by rdors on 2016-10-21.
@@ -23,13 +22,13 @@ public interface IMeetingService {
 
     Meeting saveWithUsernameAsOwner(Meeting meeting, String ownerUsername);
 
-    void update(long meetingId, Meeting meeting);
+    Meeting update(long meetingId, Meeting meeting);
 
-    void delete(long meetingId);
+    Meeting delete(long meetingId);
 
-    void addUser(long meetingId, MeetingUser meetingPerson);
+    Meeting addUser(long meetingId, MeetingUser meetingPerson);
 
-    void addUsers(long meetingId, List<MeetingUser> meetingPersons);
+    Meeting addUsers(long meetingId, List<MeetingUser> meetingPersons);
 
     void deleteUser(long meetingId, long userId);
 

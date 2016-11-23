@@ -85,46 +85,50 @@ public class MeetingService implements IMeetingService {
     }
 
     @Override
-    public void update(long meetingId, Meeting meeting) {
+    public Meeting update(long meetingId, Meeting meeting) {
         Meeting meetingDb = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         meetingDb.setName(meeting.getName());
         meetingDb.setLastUpdate(LocalDateTime.now());
         meetingDb.setActive(true);
-        meetingRepository.save(meetingDb);
+        return meetingRepository.save(meetingDb);
     }
 
     @Override
-    public void delete(long meetingId) {
+    public Meeting delete(long meetingId) {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         meeting.setLastUpdate(LocalDateTime.now());
         meeting.setActive(false);
-        meetingRepository.save(meeting);
+        return meetingRepository.save(meeting);
     }
 
     @Override
-    public void addUser(long meetingId, MeetingUser meetingUser) {
+    public Meeting addUser(long meetingId, MeetingUser meetingUser) {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         userRepository.findById(meetingUser.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        meetingUser.setMeeting(meeting);
-        meeting.getMeetingUsers().add(meetingUser);
-        meetingRepository.save(meeting);
+        if (!meeting.getMeetingUsers().contains(meetingUser)) {
+            meetingUser.setMeeting(meeting);
+            meeting.getMeetingUsers().add(meetingUser);
+        }
+        return meetingRepository.save(meeting);
     }
 
     @Override
-    public void addUsers(long meetingId, List<MeetingUser> meetingUsers) {
+    public Meeting addUsers(long meetingId, List<MeetingUser> meetingUsers) {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new RuntimeException("Meeting not found"));
         meetingUsers.stream().forEach(meetingUser -> {
             userRepository.findById(meetingUser.getUser().getId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-            meetingUser.setMeeting(meeting);
-            meeting.getMeetingUsers().add(meetingUser);
+            if (!meeting.getMeetingUsers().contains(meetingUser)) {
+                meetingUser.setMeeting(meeting);
+                meeting.getMeetingUsers().add(meetingUser);
+            }
         });
-        meetingRepository.save(meeting);
+        return meetingRepository.save(meeting);
     }
 
     @Override
