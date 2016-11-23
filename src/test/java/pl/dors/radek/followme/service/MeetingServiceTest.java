@@ -13,14 +13,12 @@ import pl.dors.radek.followme.model.Place;
 import pl.dors.radek.followme.model.UserStatus;
 import pl.dors.radek.followme.model.security.User;
 import pl.dors.radek.followme.repository.MeetingRepository;
+import pl.dors.radek.followme.repository.MeetingUserRepository;
 import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.UserRepository;
 import pl.dors.radek.followme.service.impl.MeetingService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,6 +40,8 @@ public class MeetingServiceTest {
     private PlaceRepository placeRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private MeetingUserRepository meetingUserRepository;
 
     //FIXME: to remove
     private static long id;
@@ -57,8 +57,13 @@ public class MeetingServiceTest {
     User user3;
     private List<User> users;
 
-    MeetingUser meetingUser2;
     MeetingUser meetingUser1;
+    MeetingUser meetingUser2;
+    MeetingUser meetingUser3;
+
+    Meeting meeting5;
+    MeetingUser meetingUser4;
+    MeetingUser meetingUser5;
 
     @Before
     public void setUp() throws Exception {
@@ -73,6 +78,10 @@ public class MeetingServiceTest {
 
         meeting4 = new Meeting("not-exists");
         meeting4.setId(4L);
+
+        meeting5 = new Meeting("Meeting5");
+        meeting5.setId(5l);
+        meeting5.setActive(true);
 
         user1 = new User();
         user1.setId(1L);
@@ -98,12 +107,33 @@ public class MeetingServiceTest {
         meetingUser2.setUserStatus(UserStatus.ACTIVE);
         meeting2.getMeetingUsers().add(meetingUser2);
 
+        meetingUser3 = new MeetingUser();
+        meetingUser3.setUser(user2);
+        meetingUser3.setMeeting(meeting3);
+        meetingUser3.setOwner(true);
+        meetingUser3.setUserStatus(UserStatus.ACTIVE);
+
+        meetingUser4 = new MeetingUser();
+        meetingUser4.setUser(user1);
+        meetingUser4.setMeeting(meeting5);
+        meetingUser4.setOwner(true);
+        meetingUser4.setUserStatus(UserStatus.ACTIVE);
+        meeting5.getMeetingUsers().add(meetingUser4);
+
+        meetingUser5 = new MeetingUser();
+        meetingUser5.setUser(user2);
+        meetingUser5.setMeeting(meeting5);
+        meetingUser5.setOwner(true);
+        meetingUser5.setUserStatus(UserStatus.ACTIVE);
+        meeting5.getMeetingUsers().add(meetingUser5);
+
         Place place1 = new Place();
         place1.setId(1L);
         place1.setName("Place1");
         place1.setX(11);
         place1.setY(22);
         meeting2.setPlace(place1);
+        meeting3.setPlace(place1);
 
         Mockito.when(meetingRepository.findByUsername(eq(user1.getUsername())))
                 .thenReturn(Arrays.asList(meeting1));
@@ -120,6 +150,8 @@ public class MeetingServiceTest {
                 .thenReturn(Optional.of(meeting3));
         Mockito.when(meetingRepository.findById(eq(meeting4.getId())))
                 .thenReturn(Optional.ofNullable(null));
+        Mockito.when(meetingRepository.findById(eq(meeting5.getId())))
+                .thenReturn(Optional.of(meeting5));
 
         Mockito.when(meetingRepository.findByUserId(user1.getId()))
                 .thenReturn(Arrays.asList(meeting1, meeting2));
@@ -149,6 +181,13 @@ public class MeetingServiceTest {
                 .then(i -> i.getArgumentAt(0, Place.class));
         Mockito.when(meetingRepository.save(any(Meeting.class)))
                 .then(i -> i.getArgumentAt(0, Meeting.class));
+
+        Mockito.doAnswer(i -> {
+            MeetingUser meetingUser = i.getArgumentAt(0, MeetingUser.class);
+            Meeting meeting = meetingUser.getMeeting();
+            meeting.getMeetingUsers().remove(meetingUser);
+            return null;
+        }).when(meetingUserRepository).delete(any(MeetingUser.class));
     }
 
     @Test
@@ -215,14 +254,126 @@ public class MeetingServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getPlace().getMeeting()).isEqualTo(meeting2);
         assertThat(result.getMeetingUsers()).hasSize(2);
-        assertThat(result.getMeetingUsers()).contains(meetingUser2);
         MeetingUser meetingUser3 = new MeetingUser();
         meetingUser3.setMeeting(meeting2);
         meetingUser3.setUser(user1);
-        assertThat(result.getMeetingUsers()).contains(meetingUser2, meetingUser3);
+        assertThat(result.getMeetingUsers()).containsOnly(meetingUser2, meetingUser3);
     }
 
-//    @Test
+    @Test(expected = RuntimeException.class)
+    public void saveWithUsernameAsOwnerTest_MeetingNull() throws Exception {
+        meetingService.saveWithUsernameAsOwner(null, user1.getUsername());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void saveWithUsernameAsOwnerTest_UsernameNotExists() throws Exception {
+        meetingService.saveWithUsernameAsOwner(meeting2, user3.getUsername());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void saveWithUsernameAsOwnerTest_UsernameNull() throws Exception {
+        meetingService.saveWithUsernameAsOwner(meeting2, null);
+    }
+
+    @Test
+    public void saveWithUsernameAsOwnerTest_EmptyMeetingUsers() throws Exception {
+        Meeting result = meetingService.saveWithUsernameAsOwner(meeting3, user1.getUsername());
+        assertThat(result).isNotNull();
+        assertThat(result.getPlace().getMeeting()).isEqualTo(meeting3);
+        assertThat(result.getMeetingUsers()).hasSize(1);
+        MeetingUser meetingUser3 = new MeetingUser();
+        meetingUser3.setMeeting(meeting3);
+        meetingUser3.setUser(user1);
+        assertThat(result.getMeetingUsers()).containsOnly(meetingUser3);
+    }
+
+    @Test
+    public void updateTest() throws Exception {
+        Meeting result = meetingService.update(meeting1.getId(), meeting1);
+        assertThat(result.getLastUpdate()).isNotNull();
+        assertThat(result.getName()).isEqualTo(meeting1.getName());
+        assertThat(result.isActive()).isTrue();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void updateTest_MeetingIdNotExists() throws Exception {
+        meetingService.update(meeting4.getId(), meeting4);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void updateTest_MeetingNull() throws Exception {
+        meetingService.update(meeting1.getId(), null);
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+        meeting1.setActive(true);
+        Meeting result = meetingService.delete(meeting1.getId());
+        assertThat(result.isActive()).isFalse();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void deleteTest_MeetingIdNotExists() throws Exception {
+        meeting1.setActive(true);
+        meetingService.delete(meeting4.getId());
+    }
+
+    @Test
+    public void addUserTest() throws Exception {
+        Meeting result = meetingService.addUser(meeting2.getId(), meetingUser1);
+        assertThat(result.getMeetingUsers()).hasSize(2);
+        assertThat(result.getMeetingUsers()).containsOnly(meetingUser1, meetingUser2);
+    }
+
+    @Test
+    public void addUserTest_UserAlreadyExists() throws Exception {
+        Meeting result = meetingService.addUser(meeting2.getId(), meetingUser2);
+        assertThat(result.getMeetingUsers()).hasSize(1);
+        assertThat(result.getMeetingUsers()).containsOnly(meetingUser2);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void addUserTest_MeetingIdNotExists() throws Exception {
+        meetingService.addUser(meeting4.getId(), meetingUser2);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void addUserTest_MeetingUserNull() throws Exception {
+        meetingService.addUser(meeting1.getId(), null);
+    }
+
+    @Test
+    public void addUsersTest() throws Exception {
+        Meeting result = meetingService.addUsers(meeting2.getId(), Arrays.asList(meetingUser1, meetingUser3));
+        assertThat(result.getMeetingUsers()).hasSize(3);
+        assertThat(result.getMeetingUsers()).containsOnly(meetingUser1, meetingUser2, meetingUser3);
+    }
+
+    @Test
+    public void addUsersTest_OneUserAlreadyExists() throws Exception {
+        Meeting result = meetingService.addUsers(meeting2.getId(), Arrays.asList(meetingUser1, meetingUser2, meetingUser3));
+        assertThat(result.getMeetingUsers()).hasSize(3);
+        assertThat(result.getMeetingUsers()).containsOnly(meetingUser1, meetingUser2, meetingUser3);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void addUsersTest_MeetingIdNotExists() throws Exception {
+        meetingService.addUsers(meeting4.getId(), Arrays.asList(meetingUser1, meetingUser3));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void addUsersTest_MeetingUserNull() throws Exception {
+        meetingService.addUsers(meeting1.getId(), null);
+    }
+
+    @Test
+    public void deleteUserTest() throws Exception {
+        meetingService.deleteUser(meeting5.getId(), user2.getId());
+        assertThat(meeting5.getMeetingUsers()).isEmpty();
+    }
+
+
+    //    @Test
 //    public void save() throws Exception {
 //        Meeting meeting = new Meeting("M1");
 //        Place place = new Place("P1", 1, 2);
