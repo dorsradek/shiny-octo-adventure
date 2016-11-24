@@ -40,22 +40,22 @@ public class PlaceControllerTest {
     @MockBean
     private PlaceService placeService;
 
+    List<Place> places;
+
     @Before
     public void setUp() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
 
-        List<Place> places = Arrays.asList(new Place("Stefan", 12, 13));
+        places = Arrays.asList(new Place("Place1", 12, 13));
         given(this.placeService.findAll()).willReturn(places);
     }
 
     @Test
     public void findAllPlacesTest() throws Exception {
-        List<Place> expectedResult = Arrays.asList(new Place("Stefan", 12, 13));
-
         this.mockMvc.perform(get("/places"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is(expectedResult.get(0).getName())));
+                .andExpect(jsonPath("$[0].name", is(places.get(0).getName())));
     }
 }
