@@ -1,6 +1,7 @@
 package pl.dors.radek.followme.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,19 +30,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public List<User> findAll() {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<User> findAllExceptLoggedInUser() {
         String username = SecurityUtil.extractUser().orElseThrow(() -> new RuntimeException("Authentication problem"));
         return userService.findAllExceptUsername(username);
     }
 
-    @GetMapping(value = "/{userId}")
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> showDetails(@PathVariable("userId") long userId) {
         User user = userService.findById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{userId}/meetings")
+    @GetMapping(value = "/{userId}/meetings", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Meeting> findAllByUserId(@PathVariable("userId") long userId) {
         return meetingService.findByUserId(userId);
     }
