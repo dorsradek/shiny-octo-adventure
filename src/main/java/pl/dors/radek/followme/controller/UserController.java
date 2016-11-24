@@ -2,18 +2,16 @@ package pl.dors.radek.followme.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.dors.radek.followme.model.Meeting;
 import pl.dors.radek.followme.model.security.User;
-import pl.dors.radek.followme.security.JwtUser;
 import pl.dors.radek.followme.service.IMeetingService;
 import pl.dors.radek.followme.service.IUserService;
+import pl.dors.radek.followme.util.SecurityUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,13 +31,8 @@ public class UserController {
 
     @GetMapping
     public List<User> findAll() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof JwtUser) {
-            String username = ((JwtUser) principal).getUsername();
-            return userService.findAllExceptUsername(username);
-        } else {
-            return new ArrayList<>();
-        }
+        String username = SecurityUtil.extractUser().orElseThrow(() -> new RuntimeException("Authentication problem"));
+        return userService.findAllExceptUsername(username);
     }
 
     @GetMapping(value = "/{userId}")
