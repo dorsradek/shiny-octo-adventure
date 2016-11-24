@@ -18,7 +18,10 @@ import pl.dors.radek.followme.repository.PlaceRepository;
 import pl.dors.radek.followme.repository.UserRepository;
 import pl.dors.radek.followme.service.impl.MeetingService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,9 +46,6 @@ public class MeetingServiceTest {
     @Mock
     private MeetingUserRepository meetingUserRepository;
 
-    //FIXME: to remove
-    private static long id;
-
     Meeting meeting1;
     Meeting meeting2;
     Meeting meeting3;
@@ -55,6 +55,7 @@ public class MeetingServiceTest {
     User user1;
     User user2;
     User user3;
+    User user4;
     private List<User> users;
 
     MeetingUser meetingUser1;
@@ -64,6 +65,8 @@ public class MeetingServiceTest {
     Meeting meeting5;
     MeetingUser meetingUser4;
     MeetingUser meetingUser5;
+
+    List<MeetingUser> meetingUsersToRemove;
 
     @Before
     public void setUp() throws Exception {
@@ -94,6 +97,10 @@ public class MeetingServiceTest {
         user3 = new User();
         user3.setId(3L);
         user3.setUsername("not-exists");
+
+        user4 = new User();
+        user4.setId(4L);
+        user4.setUsername("User4");
 
         meetingUser1 = new MeetingUser();
         meetingUser1.setUser(user1);
@@ -169,6 +176,8 @@ public class MeetingServiceTest {
                 .thenReturn(Optional.of(user2));
         Mockito.when(userRepository.findById(user3.getId()))
                 .thenReturn(Optional.ofNullable(null));
+        Mockito.when(userRepository.findById(user4.getId()))
+                .thenReturn(Optional.of(user4));
 
         Mockito.when(userRepository.findByUsername(user1.getUsername()))
                 .thenReturn(Optional.of(user1));
@@ -176,16 +185,18 @@ public class MeetingServiceTest {
                 .thenReturn(Optional.of(user2));
         Mockito.when(userRepository.findByUsername(user3.getUsername()))
                 .thenReturn(Optional.ofNullable(null));
+        Mockito.when(userRepository.findByUsername(user4.getUsername()))
+                .thenReturn(Optional.of(user4));
 
         Mockito.when(placeRepository.save(any(Place.class)))
                 .then(i -> i.getArgumentAt(0, Place.class));
         Mockito.when(meetingRepository.save(any(Meeting.class)))
                 .then(i -> i.getArgumentAt(0, Meeting.class));
 
+        meetingUsersToRemove = new ArrayList<>();
         Mockito.doAnswer(i -> {
             MeetingUser meetingUser = i.getArgumentAt(0, MeetingUser.class);
-            Meeting meeting = meetingUser.getMeeting();
-            meeting.getMeetingUsers().remove(meetingUser);
+            meetingUsersToRemove.add(meetingUser);
             return null;
         }).when(meetingUserRepository).delete(any(MeetingUser.class));
     }
@@ -369,20 +380,69 @@ public class MeetingServiceTest {
     @Test
     public void deleteUserTest() throws Exception {
         meetingService.deleteUser(meeting5.getId(), user2.getId());
-        assertThat(meeting5.getMeetingUsers()).isEmpty();
+        meeting5.getMeetingUsers().removeAll(meetingUsersToRemove);
+        assertThat(meeting5.getMeetingUsers()).hasSize(1);
+        assertThat(meeting5.getMeetingUsers().get(0)).isEqualTo(meetingUser4);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void deleteUserTest_UsernameNotExists() throws Exception {
+        meetingService.deleteUser(meeting5.getId(), user3.getId());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void deleteUserTest_MeetingNotExists() throws Exception {
+        meetingService.deleteUser(meeting4.getId(), user2.getId());
+    }
+
+    @Test
+    public void deleteUserTest_MeetingNotContainsUser() throws Exception {
+        meetingService.deleteUser(meeting5.getId(), user4.getId());
+        meeting5.getMeetingUsers().removeAll(meetingUsersToRemove);
+        assertThat(meeting5.getMeetingUsers()).hasSize(2);
+        assertThat(meeting5.getMeetingUsers()).containsOnly(meetingUser4, meetingUser5);
     }
 
 
-    //    @Test
-//    public void save() throws Exception {
-//        Meeting meeting = new Meeting("M1");
-//        Place place = new Place("P1", 1, 2);
-//        meeting.setPlace(place);
-//        meetingService.saveWithUsernameAsOwner(meeting, "U111");
-//        assertThat(meeting.getMeetingUsers()).hasSize(1);
-//        assertThat(meeting.getMeetingUsers().get(0).getUser().getUsername()).isEqualTo("U111");
-//        assertThat(meeting.getMeetingUsers().get(0).getUser().getId()).isNotNull();
-//        assertThat(meeting.getPlace().getId()).isNotNull();
-//    }
+    @Test
+    public void deleteUsersTest() throws Exception {
+        meetingService.deleteUsers(meeting5.getId(), Arrays.asList(user2.getId()));
+        meeting5.getMeetingUsers().removeAll(meetingUsersToRemove);
+        assertThat(meeting5.getMeetingUsers()).hasSize(1);
+        assertThat(meeting5.getMeetingUsers().get(0)).isEqualTo(meetingUser4);
+    }
+
+    @Test
+    public void deleteUsersTest_TwoUsers() throws Exception {
+        meetingService.deleteUsers(meeting5.getId(), Arrays.asList(user1.getId(), user2.getId()));
+        meeting5.getMeetingUsers().removeAll(meetingUsersToRemove);
+        assertThat(meeting5.getMeetingUsers()).isEmpty();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void deleteUsersTest_UsernameNotExists() throws Exception {
+        meetingService.deleteUsers(meeting5.getId(), Arrays.asList(user3.getId()));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void deleteUsersTest_MeetingNotExists() throws Exception {
+        meetingService.deleteUsers(meeting4.getId(), Arrays.asList(user2.getId()));
+    }
+
+    @Test
+    public void deleteUsersTest_MeetingNotContainsUser() throws Exception {
+        meetingService.deleteUsers(meeting5.getId(), Arrays.asList(user4.getId()));
+        meeting5.getMeetingUsers().removeAll(meetingUsersToRemove);
+        assertThat(meeting5.getMeetingUsers()).hasSize(2);
+        assertThat(meeting5.getMeetingUsers()).containsOnly(meetingUser4, meetingUser5);
+    }
+
+    @Test
+    public void deleteUsersTest_MeetingContainsOneOfTwoUser() throws Exception {
+        meetingService.deleteUsers(meeting5.getId(), Arrays.asList(user4.getId(), user1.getId()));
+        meeting5.getMeetingUsers().removeAll(meetingUsersToRemove);
+        assertThat(meeting5.getMeetingUsers()).hasSize(1);
+        assertThat(meeting5.getMeetingUsers()).containsOnly(meetingUser5);
+    }
 
 }
